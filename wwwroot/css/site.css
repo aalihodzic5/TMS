@@ -1,0 +1,125 @@
+/* Osnovne postavke */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* Sidebar stil */
+.sidebar {
+    min-height: 100vh;
+    width: 220px;
+    background-color: #ffffff;
+    padding: 1rem;
+    border-right: 1px solid #dee2e6;
+}
+
+    .sidebar img {
+        max-width: 100px;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar h4 {
+        margin-bottom: 0.25rem;
+    }
+
+    .sidebar p {
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .sidebar .nav-link {
+        display: block;
+        color: #343a40;
+        padding: 0.5rem 0;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+        font-weight: 500;
+    }
+
+        .sidebar .nav-link:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+    .sidebar .section-separator {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        border-top: 1px solid #ccc;
+    }
+
+/* Glavni sadržaj */
+main {
+    padding: 2rem;
+}
+
+/* Footer */
+footer {
+    background-color: #e9ecef;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+    footer a {
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+/* Dugmad i forme */
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Tabele */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+    table th,
+    table td {
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+        text-align: left;
+    }
+
+    table thead {
+        background-color: #e9ecef;
+    }

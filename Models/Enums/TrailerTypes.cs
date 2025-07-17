@@ -1,0 +1,42 @@
+﻿namespace TMS.Models.Enums
+{
+    public enum TrailerTypes
+    {
+        VANS,
+        REFER,
+        FLATBED,
+        TANKER,
+        LOWBOY,
+        STEP_DECK,
+        CONTAINER,
+        DUMP_TRAILER,
+        GRAVEL_TRAILER,
+        LIVE_BOTTOM_TRAILER,
+        END_DUMP_TRAILER,
+        SIDE_DUMP_TRAILER,
+        WALKING_FLOOR_TRAILER,
+        BOTTOM_DUMP_TRAILER,
+        FUEL_TANKER,
+        BULK_TANKER,
+        CHEMICAL_TANKER,
+        FOOD_TANKER,
+        LIQUID_TANKER,
+        DRY_BULK_TANKER,
+        LIQUID_BULK_TANKER,
+        REEFER_CONTAINER,
+        FLATBED_CONTAINER,
+        OPEN_TOP_CONTAINER,
+        FLAT_RACK_CONTAINER,
+        TANK_CONTAINER,
+        DRY_CONTAINER,
+        HIGH_CUBE_CONTAINER,
+        PLATFORM_CONTAINER,
+        DOUBLE_DECKER_CONTAINER,
+        REEFER_TRAILER,
+        FLATBED_TRAILER,
+        LOWBOY_TRAILER,
+        STEP_DECK_TRAILER,
+        CONTAINER_TRAILER,
+
+    }
+}

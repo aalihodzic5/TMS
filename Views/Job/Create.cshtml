@@ -1,0 +1,98 @@
+﻿@model TMS.Models.Job
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Job</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="loadDate" class="control-label"></label>
+                <input asp-for="loadDate" class="form-control" />
+                <span asp-validation-for="loadDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="trailerType" class="control-label"></label>
+                <select asp-for="trailerType" class="form-control"></select>
+                <span asp-validation-for="trailerType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="loadType" class="control-label"></label>
+                <select asp-for="loadType" class="form-control"></select>
+                <span asp-validation-for="loadType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="distanceOrigin" class="control-label"></label>
+                <input asp-for="distanceOrigin" class="form-control" />
+                <span asp-validation-for="distanceOrigin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="distanceDestination" class="control-label"></label>
+                <input asp-for="distanceDestination" class="form-control" />
+                <span asp-validation-for="distanceDestination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="locationOrigin" class="control-label"></label>
+                <input asp-for="locationOrigin" class="form-control" />
+                <span asp-validation-for="locationOrigin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="locationDestination" class="control-label"></label>
+                <input asp-for="locationDestination" class="form-control" />
+                <span asp-validation-for="locationDestination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="companyName" class="control-label"></label>
+                <input asp-for="companyName" class="form-control" />
+                <span asp-validation-for="companyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="loadWeight" class="control-label"></label>
+                <input asp-for="loadWeight" class="form-control" />
+                <span asp-validation-for="loadWeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="loadLength" class="control-label"></label>
+                <input asp-for="loadLength" class="form-control" />
+                <span asp-validation-for="loadLength" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="price" class="control-label"></label>
+                <input asp-for="price" class="form-control" />
+                <span asp-validation-for="price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="comments" class="control-label"></label>
+                <input asp-for="comments" class="form-control" />
+                <span asp-validation-for="comments" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="postingDate" class="control-label"></label>
+                <input asp-for="postingDate" class="form-control" />
+                <span asp-validation-for="postingDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

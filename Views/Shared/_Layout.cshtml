@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TMS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TMS.styles.css" asp-append-version="true" />
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .main-wrapper {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .sidebar .nav-link {
+                margin-bottom: 0.5rem;
+            }
+
+            .sidebar .section-separator {
+                margin-top: 2rem;
+                border-top: 1px solid #ccc;
+                margin-bottom: 1rem;
+            }
+
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <img src="~/images/ChatGPT Image Jul 16, 2025, 11_42_02 AM.png" alt="TMS Logo" class="img-fluid mb-2 mx-auto d-block" style="max-width: 100px;" />
+            <h4 class="text-primary text-center mb-1">TMS</h4>
+            <p class="text-muted text-center mb-3">@User.Identity?.Name</p>
+
+            <div class="section-separator"></div>
+
+            <nav class="nav flex-column">
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Find Job</a>
+                <a class="nav-link text-dark" asp-controller="Maps" asp-action="Index">Maps</a>
+                <a class="nav-link text-dark" asp-controller="Comparator" asp-action="Index">Comparator</a>
+                <a class="nav-link text-dark" asp-controller="Truck" asp-action="Index">Trucks</a>
+                <a class="nav-link text-dark" asp-controller="Trailer" asp-action="Index">Trailers</a>
+                <a class="nav-link text-dark" asp-controller="Driver" asp-action="Index">Drivers</a>
+                <a class="nav-link text-dark" asp-controller="SavedJobs" asp-action="Index">Saved Jobs</a>
+                <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Reports</a>
+
+                <div class="section-separator"></div>
+
+                <a class="nav-link text-dark" asp-controller="Notifications" asp-action="Index">Notifications</a>
+                <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Account</a>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-dark p-0">Log Out</button>
+                </form>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="border-bottom pb-2 mb-3">
+                <h4 class="text-secondary">@ViewData["Title"]</h4>
+            </div>
+
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+
+            <footer class="border-top footer text-muted mt-4">
+                <div class="container">
+                    &copy; 2025 - TMS - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

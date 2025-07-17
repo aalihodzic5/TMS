@@ -1,0 +1,28 @@
+﻿@model TMS.Models.User
+
+@{
+    ViewData["Title"] = "Detalji korisnika";
+}
+
+<h1>Detalji korisnika</h1>
+
+<div>
+    <h4>Korisnik</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd>
+
+        <dt class="col-sm-2">Korisničko ime</dt>
+        <dd class="col-sm-10">@Model.UserName</dd>
+
+        <dt class="col-sm-2">Ime</dt>
+        <dd class="col-sm-10">@Model.Ime</dd>
+
+        <dt class="col-sm-2">Prezime</dt>
+        <dd class="col-sm-10">@Model.Prezime</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Nazad na listu</a>
+</div>
