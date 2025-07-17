@@ -44,20 +44,9 @@ namespace TMS.Controllers
         // GET: Driver/Create
         public async Task<IActionResult> Create()
         {
-            // Dohvati korisnike iz Identity tabele User i napravi pomoćni objekat sa FullName
-            var users = await _userManager.Users
-                .Select(u => new
-                {
-                    u.Id,
-                    FullName = u.Ime + " " + u.Prezime
-                })
-                .ToListAsync();
+            
 
-            var trucks = await _context.Truck.ToListAsync();
-
-            ViewBag.Users = new SelectList(users, "Id", "FullName");
-            ViewBag.Trucks = new SelectList(trucks, "Id", "RegistrationNumber");
-
+            await SetDropdownListsAsync();
             return View();
         }
 
@@ -73,20 +62,9 @@ namespace TMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Ponovo napuni liste ako model nije validan
-            var users = await _userManager.Users
-                .Select(u => new
-                {
-                    u.Id,
-                    FullName = u.Ime + " " + u.Prezime
-                })
-                .ToListAsync();
+           
 
-            var trucks = await _context.Truck.ToListAsync();
-
-            ViewBag.Users = new SelectList(users, "Id", "FullName", driver.UserID);
-            ViewBag.Trucks = new SelectList(trucks, "Id", "RegistrationNumber", driver.TruckId);
-
+            await SetDropdownListsAsync(driver);
             return View(driver);
         }
 
@@ -162,5 +140,25 @@ namespace TMS.Controllers
         {
             return _context.Driver.Any(e => e.Id == id);
         }
+
+
+        private async Task SetDropdownListsAsync(Driver driver = null)
+        {
+            var users = await _userManager.Users
+                .Select(u => new
+                {
+                    u.Id,
+                    FullName = u.Ime + " " + u.Prezime
+                })
+                .ToListAsync();
+
+            var trucks = await _context.Truck.ToListAsync();
+
+            ViewBag.Users = new SelectList(users, "Id", "FullName", driver?.UserID);
+            ViewBag.Trucks = new SelectList(trucks, "Id", "RegistrationNumber", driver?.TruckId);
+        }
+
+
+        // Helper method to set dropdown lists for Create and Edit views
     }
 }

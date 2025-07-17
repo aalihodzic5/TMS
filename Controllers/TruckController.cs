@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
+using TMS.Models.Enums;
 
 namespace TMS.Controllers
 {
@@ -46,6 +47,8 @@ namespace TMS.Controllers
         // GET: Truck/Create
         public IActionResult Create()
         {
+
+
             return View();
         }
 

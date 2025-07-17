@@ -17,6 +17,8 @@ namespace TMS.Models
         public int? TruckId { get; set; }
         public Truck? Truck { get; set; } = default!;
 
+
+
         [Required]
         public string FirstName { get; set; } = default!;
 

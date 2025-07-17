@@ -17,10 +17,10 @@ namespace TMS.Models
         public DateTime loadDate { get; set; }
 
         [EnumDataType(typeof(TrailerTypes))]
-        public TrailerTypes trailerType { get; set; }
+        public TrailerTypes TrailerTypes { get; set; }
 
         [EnumDataType(typeof(LoadType))]
-        public LoadType loadType { get; set; }
+        public LoadType LoadType { get; set; }
         public double distanceOrigin { get; set; }
         public double distanceDestination { get; set; }
         public string locationOrigin { get; set; } = default!;

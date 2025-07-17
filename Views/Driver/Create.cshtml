@@ -31,11 +31,16 @@
 
             <div class="form-group">
                 <label asp-for="UserID" class="control-label"></label>
-                <select asp-for="UserID" class="form-control" asp-items="ViewBag.Users">
-                    <option value="">-- Odaberi korisnika --</option>
-                </select>
-                <span asp-validation-for="UserID" class="text-danger"></span>
-            </div>
+                @{
+                    var usersList = ViewBag.Users as SelectList ?? new SelectList(new List<object>(), "Id", "FullName");
+                }
+                <div class="form-group">
+                    <label asp-for="UserID" class="control-label"></label>
+                    <select asp-for="UserID" class="form-control" asp-items="usersList">
+                        <option value="">-- Odaberi korisnika --</option>
+                    </select>
+                    <span asp-validation-for="UserID" class="text-danger"></span>
+                </div>
 
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -72,11 +77,16 @@
 
             <div class="form-group">
                 <label asp-for="TruckId" class="control-label"></label>
-                <select asp-for="TruckId" class="form-control" asp-items="ViewBag.Trucks">
-                    <option value="">-- No Truck Assigned --</option>
-                </select>
-                <span asp-validation-for="TruckId" class="text-danger"></span>
-            </div>
+                    @{
+                        var truckList = ViewBag.Trucks as SelectList ?? new SelectList(new List<object>(), "Id", "RegistrationNumber");
+                    }
+                    <div class="form-group">
+                        <label asp-for="TruckId" class="control-label"></label>
+                        <select asp-for="TruckId" class="form-control" asp-items="truckList">
+                            <option value="">-- No Truck Assigned --</option>
+                        </select>
+                        <span asp-validation-for="TruckId" class="text-danger"></span>
+                    </div>
 
 
 

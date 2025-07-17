@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
+using TMS.Models.Enums;
 
 namespace TMS.Controllers
 {
@@ -46,6 +47,10 @@ namespace TMS.Controllers
         // GET: Job/Create
         public IActionResult Create()
         {
+
+            ViewBag.TrailerTypes = new SelectList(Enum.GetValues(typeof(TrailerTypes)));
+            ViewBag.LoadTypes = new SelectList(Enum.GetValues(typeof(LoadType)));
+
             return View();
         }
 
