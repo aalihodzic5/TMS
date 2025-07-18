@@ -1,13 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+using static System.Collections.Specialized.BitVector32;
 
 namespace TMS.Controllers
 {
@@ -41,16 +47,9 @@ namespace TMS.Controllers
             return View(driver);
         }
 
-        // GET: Driver/Create
-        public async Task<IActionResult> Create(int id)
+        public async Task<IActionResult> Create()
         {
-
-            var driver = await _context.Driver.FindAsync(id);
-            if (driver == null)
-                return NotFound();
-
-            ViewBag.Trucks = new SelectList(_context.Truck.ToList(), "Id", "RegistrationNumber", driver.TruckId);
-            //await SetDropdownListsAsync();
+            await PopulateDropdownsAsync();
             return View();
         }
 
@@ -66,14 +65,10 @@ namespace TMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-
-            ViewBag.Trucks = new SelectList(_context.Truck.ToList(), "Id", "RegistrationNumber", driver.TruckId);
-            //await SetDropdownListsAsync(driver);
+            // Ako model nije validan, puni dropdown ponovo sa selektovanim vrijednostima
+            await PopulateDropdownsAsync(driver.UserID, driver.TruckId);
             return View(driver);
         }
-
-
-
 
         // GET: Driver/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -82,14 +77,14 @@ namespace TMS.Controllers
             if (driver == null)
                 return NotFound();
 
-            ViewBag.Trucks = new SelectList(_context.Truck.ToList(), "Id", "RegistrationNumber", driver.TruckId);
+            await PopulateDropdownsAsync(driver.UserID, driver.TruckId);
             return View(driver);
         }
 
         // POST: Driver/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,PhoneNumber,DateOfBirth,TruckId,DriverStatus")] Driver driver)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,PhoneNumber,DateOfBirth,TruckId,UserID,DriverStatus")] Driver driver)
         {
             if (id != driver.Id)
                 return NotFound();
@@ -111,7 +106,7 @@ namespace TMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Trucks = new SelectList(_context.Truck.ToList(), "Id", "RegistrationNumber", driver.TruckId);
+            await PopulateDropdownsAsync(driver.UserID, driver.TruckId);
             return View(driver);
         }
 
@@ -149,23 +144,29 @@ namespace TMS.Controllers
         }
 
 
-        private async Task SetDropdownListsAsync(Driver driver = null)
+
+        private async Task PopulateDropdownsAsync(string selectedUserId = null, int? selectedTruckId = null)
         {
             var users = await _userManager.Users
-                .Select(u => new
+                .Select(u => new SelectListItem
                 {
-                    u.Id,
-                    FullName = u.Ime + " " + u.Prezime
+                    Value = u.Id,
+                    Text = (u.Ime ?? "") + " " + (u.Prezime ?? "")
                 })
                 .ToListAsync();
 
-            var trucks = await _context.Truck.ToListAsync();
+            var trucks = await _context.Truck
+                .Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.licensePlate
+                })
+                .ToListAsync();
 
-            ViewBag.Users = new SelectList(users, "Id", "FullName", driver?.UserID);
-            ViewBag.Trucks = new SelectList(trucks, "Id", "RegistrationNumber", driver?.TruckId);
+            ViewBag.Users = users;
+            ViewBag.Trucks = trucks;
         }
 
-
-        // Helper method to set dropdown lists for Create and Edit views
     }
 }
+

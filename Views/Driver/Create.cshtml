@@ -4,44 +4,14 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Create Driver</h1>
 
-@if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
-{
-    <div class="alert alert-danger">
-        <strong>Greška u validaciji!</strong>
-        <ul>
-            @foreach (var entry in ViewData.ModelState)
-            {
-                foreach (var error in entry.Value.Errors)
-                {
-                    <li>@error.ErrorMessage</li>
-                }
-            }
-        </ul>
-    </div>
-}
-
-<h4>Driver</h4>
 <hr />
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                @{
-                    var usersList = ViewBag.Users as SelectList ?? new SelectList(new List<object>(), "Id", "FullName");
-                }
-                <div class="form-group">
-                    <label asp-for="UserID" class="control-label"></label>
-                    <select asp-for="UserID" class="form-control" asp-items="usersList">
-                        <option value="">-- Odaberi korisnika --</option>
-                    </select>
-                    <span asp-validation-for="UserID" class="text-danger"></span>
-                </div>
-                </div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -62,43 +32,38 @@
 
             <div class="form-group">
                 <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" type="date" class="form-control" />
+                <input asp-for="DateOfBirth" class="form-control" type="date" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="DriverStatus" class="control-label"></label>
-                <select asp-for="DriverStatus" class="form-control"
-                        asp-items="Html.GetEnumSelectList<TMS.Models.Enums.DriverStatus>()">
-                    <option value="">-- Odaberi status --</option>
-                </select>
-                <span asp-validation-for="DriverStatus" class="text-danger"></span>
+                <label asp-for="UserID" class="control-label"></label>
+                <select asp-for="UserID" class="form-control" asp-items="ViewBag.Users"></select>
+                <span asp-validation-for="UserID" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="TruckId" class="control-label"></label>
-                    @{
-                        var truckList = ViewBag.Trucks as SelectList ?? new SelectList(new List<object>(), "Id", "RegistrationNumber");
-                    }
-                    <div class="form-group">
-                        <label asp-for="TruckId" class="control-label"></label>
-                        <select asp-for="TruckId" class="form-control" asp-items="truckList">
-                            <option value="">-- No Truck Assigned --</option>
-                        </select>
-                        <span asp-validation-for="TruckId" class="text-danger"></span>
-                    </div>
+                <select asp-for="TruckId" class="form-control" asp-items="ViewBag.Trucks"></select>
+                <span asp-validation-for="TruckId" class="text-danger"></span>
             </div>
 
+
+            <div class="form-group">
+                <label asp-for="DriverStatus" class="control-label"></label>
+                <select asp-for="DriverStatus" class="form-control">
+                    <option value="0">Inactive</option>
+                    <option value="1">Active</option>
+                </select>
+                <span asp-validation-for="DriverStatus" class="text-danger"></span>
+            </div>
 
             <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Nazad na listu</a>
 </div>
 
 @section Scripts {
