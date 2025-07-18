@@ -37,5 +37,7 @@ namespace TMS.Models
 
         // Relacija: jedan vozač ima više licenci
         public ICollection<DriverLicence> DriverLicences { get; set; } = new List<DriverLicence>();
+
+        public Driver() { }
     }
 }

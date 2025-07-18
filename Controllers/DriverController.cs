@@ -42,11 +42,15 @@ namespace TMS.Controllers
         }
 
         // GET: Driver/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int id)
         {
-            
 
-            await SetDropdownListsAsync();
+            var driver = await _context.Driver.FindAsync(id);
+            if (driver == null)
+                return NotFound();
+
+            ViewBag.Trucks = new SelectList(_context.Truck.ToList(), "Id", "RegistrationNumber", driver.TruckId);
+            //await SetDropdownListsAsync();
             return View();
         }
 
@@ -62,11 +66,14 @@ namespace TMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-           
 
-            await SetDropdownListsAsync(driver);
+            ViewBag.Trucks = new SelectList(_context.Truck.ToList(), "Id", "RegistrationNumber", driver.TruckId);
+            //await SetDropdownListsAsync(driver);
             return View(driver);
         }
+
+
+
 
         // GET: Driver/Edit/5
         public async Task<IActionResult> Edit(int id)
