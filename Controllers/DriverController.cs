@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,6 +18,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace TMS.Controllers
 {
+    [Authorize]
     public class DriverController : Controller
     {
         private readonly ApplicationDbContext _context;

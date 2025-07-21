@@ -4,11 +4,22 @@
     ViewData["Title"] = "Available Jobs";
 }
 
-<h1>Available jobs</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Broker") || User.IsInRole("Administrator"))
+{
+    <a asp-controller="Job" asp-action="Create" class="btn btn-outline-primary mb-3">
+        Create New
+    </a>
+}
+
+
+@if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
+{
+    <a asp-controller="Job" asp-action="Filter" class="btn btn-outline-primary mb-3">
+        Filter
+    </a>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -96,11 +107,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.postingDate)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                @if (User.IsInRole("Administrator") || User.IsInRole("Broker"))
+                {
+                <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                </td>
+            }
         </tr>
 }
     </tbody>

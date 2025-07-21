@@ -1,0 +1,87 @@
+﻿@model List<TMS.Models.Job>
+@{
+    ViewData["Title"] = "Filter";
+}
+
+<h2>Filter</h2>
+
+<form method="get" class="row mb-4">
+    <div class="col-md-3">
+        <label>Vozač</label>
+        <select name="vozacId" class="form-control">
+            <option value="">-- Odaberi vozača --</option>
+            @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+            {
+                <option value="@driver.Value">@driver.Text</option>
+            }
+        </select>
+    </div>
+
+
+    <div class="col-md-3">
+        <label>Tip prikolice</label><br />
+        <input type="checkbox" name="tipPrikolice" value="C" /> C<br />
+        <input type="checkbox" name="tipPrikolice" value="P" /> P<br />
+    </div>
+
+    <div class="col-md-3">
+        <label>Tip utovara</label><br />
+        <input type="checkbox" name="utovar" value="Pun" /> Pun<br />
+        <input type="checkbox" name="utovar" value="Djelimican" /> Djelimičan<br />
+    </div>
+
+    <div class="col-md-3">
+        <label>Datum</label><br />
+        <input type="date" name="datum" class="form-control" />
+    </div>
+
+    <div class="col-md-3 mt-2">
+        <label>Min udaljenost</label>
+        <input type="number" name="minUdaljenost" class="form-control" />
+    </div>
+    <div class="col-md-3 mt-2">
+        <label>Max udaljenost</label>
+        <input type="number" name="maxUdaljenost" class="form-control" />
+    </div>
+
+    <div class="col-md-3 mt-2">
+        <label>Minimalna cijena</label>
+        <input type="number" name="minCijena" class="form-control" />
+    </div>
+
+    <div class="col-md-12 mt-3">
+        <button type="submit" class="btn btn-primary">Primijeni filter</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Polazište</th>
+            <th>Odredište</th>
+            <th>Datum</th>
+            <th>Prikolica</th>
+            <th>Teret</th>
+            <th>Udaljenost</th>
+            <th>Cijena</th>
+            <th>Dodijeli</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var job in Model)
+        {
+            <tr>
+                <td>@job.locationOrigin</td>
+                <td>@job.locationDestination</td>
+                <td>@job.loadDate.ToShortDateString()</td>
+                <td>@job.TrailerTypes</td>
+                <td>@job.LoadType</td>
+                <td>@(job.distanceOrigin + job.distanceDestination) km</td>
+                <td>@job.price.ToString("C")</td>
+                <td>
+                    <input type="checkbox" name="assign_@job.Id" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

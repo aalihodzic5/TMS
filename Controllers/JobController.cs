@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
@@ -59,7 +61,7 @@ namespace TMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,loadDate,trailerType,loadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
+        public async Task<IActionResult> Create([Bind("Id,loadDate,TrailerTypes,LoadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +73,7 @@ namespace TMS.Controllers
         }
 
         // GET: Job/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
@@ -91,9 +93,9 @@ namespace TMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,loadDate,trailerType,loadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,loadDate,trailerType,loadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
         {
-            if (int.Parse(id) != job.Id)
+            if (id != job.Id)
             {
                 return NotFound();
             }
@@ -122,7 +124,7 @@ namespace TMS.Controllers
         }
 
         // GET: Job/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
             {
@@ -130,7 +132,7 @@ namespace TMS.Controllers
             }
 
             var job = await _context.Job
-                .FirstOrDefaultAsync(m => m.Id == int.Parse(id));
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (job == null)
             {
                 return NotFound();
@@ -142,7 +144,7 @@ namespace TMS.Controllers
         // POST: Job/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var job = await _context.Job.FindAsync(id);
             if (job != null)
@@ -158,5 +160,38 @@ namespace TMS.Controllers
         {
             return _context.Job.Any(e => e.Id == id);
         }
+
+
+        //Filter forms
+
+
+        private string GetCurrentDispatcherId()
+        {
+          return User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        }
+
+
+        [Authorize(Roles = "Dispatcher, Administrator")]
+        
+        public IActionResult Filter()
+        {
+            string dispatcherId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var drivers = _context.Driver
+                .Where(d => d.Id.ToString() == dispatcherId)
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.FirstName + " " + d.LastName
+                }).ToList();
+
+            ViewBag.DriverList = drivers;
+
+            var jobs = _context.Job.Where(j => j.DriverId == null).ToList();
+
+            return View(jobs);
+        }
+
+
     }
 }

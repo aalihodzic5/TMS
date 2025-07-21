@@ -82,6 +82,12 @@ namespace TMS.Areas.Identity.Pages.Account
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
+
+            [Required(ErrorMessage = "Uloga je obavezna.")]
+            [Display(Name = "Uloga")]
+            public string Role { get; set; }
+
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -140,6 +146,16 @@ namespace TMS.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+
+                    // 🔹 Dodaj korisnika u izabranu ulogu (Broker ili Dispatcher)
+                    var roleResult = await _userManager.AddToRoleAsync(user, Input.Role);
+                    if (!roleResult.Succeeded)
+                    {
+                        foreach (var error in roleResult.Errors)
+                            ModelState.AddModelError(string.Empty, $"Dodjela uloge nije uspjela: {error.Description}");
+                        return Page(); // zaustavi ako ne uspije
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

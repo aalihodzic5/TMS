@@ -11,8 +11,8 @@ namespace TMS.Models
         public int Id { get; set; }
 
         [ForeignKey("Driver")]
-        public int DriverId { get; set; }
-        public Driver Driver { get; set; } = default!;
+        public int? DriverId { get; set; }
+        public Driver? Driver { get; set; } = default!;
 
         public DateTime loadDate { get; set; }
 

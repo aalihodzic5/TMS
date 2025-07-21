@@ -16,8 +16,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // 2. Identity konfiguracija
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<User>(options =>
+    options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
 // 3. Dodaj globalni [Authorize] filter
 builder.Services.AddControllersWithViews(options =>
@@ -30,6 +34,23 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = { "Broker", "Dispatcher" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+
+
+
+
 
 // 4. Middleware
 if (app.Environment.IsDevelopment())

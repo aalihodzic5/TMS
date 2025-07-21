@@ -55,22 +55,46 @@
 
             <nav class="nav flex-column">
                 <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Find Job</a>
-                <a class="nav-link text-dark" asp-controller="Maps" asp-action="Index">Maps</a>
-                <a class="nav-link text-dark" asp-controller="Comparator" asp-action="Index">Comparator</a>
-                <a class="nav-link text-dark" asp-controller="Truck" asp-action="Index">Trucks</a>
-                <a class="nav-link text-dark" asp-controller="Trailer" asp-action="Index">Trailers</a>
-                <a class="nav-link text-dark" asp-controller="Driver" asp-action="Index">Drivers</a>
-                <a class="nav-link text-dark" asp-controller="SavedJobs" asp-action="Index">Saved Jobs</a>
+
+                @if (User.IsInRole("Broker") || User.IsInRole("Administrator"))
+                {
+                    <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Set Job</a>
+                    
+                }
+
+                @if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
+                {
+                    <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Find Job</a>
+                    <a class="nav-link text-dark" asp-controller="Maps" asp-action="Index">Maps</a>
+                    <a class="nav-link text-dark" asp-controller="Comparator" asp-action="Index">Comparator</a>
+                    <a class="nav-link text-dark" asp-controller="Truck" asp-action="Index">Trucks</a>
+                    <a class="nav-link text-dark" asp-controller="Trailer" asp-action="Index">Trailers</a>
+                    <a class="nav-link text-dark" asp-controller="Driver" asp-action="Index">Drivers</a>
+                    <a class="nav-link text-dark" asp-controller="SavedJobs" asp-action="Index">Saved Jobs</a>
+                    
+                }
+
+                @if (User.IsInRole("Administrator") || User.IsInRole("Broker") || User.IsInRole("Dispatcher"))
+                {
+
                 <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Reports</a>
-
                 <div class="section-separator"></div>
-
                 <a class="nav-link text-dark" asp-controller="Notifications" asp-action="Index">Notifications</a>
                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Account</a>
-                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
                     <button type="submit" class="btn btn-link nav-link text-dark p-0">Log Out</button>
                 </form>
+                }
+                else
+                {
+                <form asp-area="Identity" asp-page="/Account/Login" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-dark p-0">Login</button>
+                </form>
+                <form asp-area="Identity" asp-page="/Account/Register" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-dark p-0">Register</button>
+                </form>
+                }
+
             </nav>
         </div>
 
@@ -84,11 +108,18 @@
                 @RenderBody()
             </main>
 
+            <!--
+            <div class="text-center mt-4 mb-2 small">
+                <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
+            </div>  
+
             <footer class="border-top footer text-muted mt-4">
                 <div class="container">
-                    &copy; 2025 - TMS - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    &copy; 2025 - TMS 
                 </div>
             </footer>
+            -->
+
         </div>
     </div>
 
