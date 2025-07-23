@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TMS.Migrations
 {
     /// <inheritdoc />
-    public partial class UserCorrectionMigration : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,24 +50,6 @@ namespace TMS.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Truck",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    model = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    licensePlate = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    specification = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    nextServiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    registration = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Truck", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,6 +181,30 @@ namespace TMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Truck",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    licensePlate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    specification = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    nextServiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    registration = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Truck", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Truck_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Driver",
                 columns: table => new
                 {
@@ -278,10 +284,10 @@ namespace TMS.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DriverId = table.Column<int>(type: "int", nullable: false),
+                    DriverId = table.Column<int>(type: "int", nullable: true),
                     loadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    trailerType = table.Column<int>(type: "int", nullable: false),
-                    loadType = table.Column<int>(type: "int", nullable: false),
+                    TrailerTypes = table.Column<int>(type: "int", nullable: false),
+                    LoadType = table.Column<int>(type: "int", nullable: false),
                     distanceOrigin = table.Column<double>(type: "float", nullable: false),
                     distanceDestination = table.Column<double>(type: "float", nullable: false),
                     locationOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -300,8 +306,7 @@ namespace TMS.Migrations
                         name: "FK_Job_Driver_DriverId",
                         column: x => x.DriverId,
                         principalTable: "Driver",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -512,6 +517,11 @@ namespace TMS.Migrations
                 name: "IX_Trailer_TruckId",
                 table: "Trailer",
                 column: "TruckId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Truck_UserID",
+                table: "Truck",
+                column: "UserID");
         }
 
         /// <inheritdoc />
@@ -563,10 +573,10 @@ namespace TMS.Migrations
                 name: "Driver");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Truck");
 
             migrationBuilder.DropTable(
-                name: "Truck");
+                name: "AspNetUsers");
         }
     }
 }

@@ -9,6 +9,8 @@ namespace TMS.Models
         [Key]
         public int Id { get; set; }
 
+        public string? UserID { get; set; } // ID korisnika koji je dodao kamion
+        public User? User { get; set; }
         public string brand { get; set; }
 
         public string model { get; set; }

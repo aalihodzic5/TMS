@@ -6,21 +6,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
+
+using System.Text.Json;
+using System.Net.Http;
+
+
 
 namespace TMS.Controllers
 {
     public class JobController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _config;
 
-        public JobController(ApplicationDbContext context)
+        public JobController(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
+
+
 
         // GET: Job
         public async Task<IActionResult> Index()
@@ -190,6 +200,45 @@ namespace TMS.Controllers
             var jobs = _context.Job.Where(j => j.DriverId == null).ToList();
 
             return View(jobs);
+        }
+
+        //MAPS
+        public IActionResult Map()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetRoute([FromBody] List<List<double>> coordinates)
+        {
+            try
+            {
+                var client = new HttpClient();
+                var apiKey = _config["OpenRouteService:ApiKey"];
+                //client.DefaultRequestHeaders.Add("Authorization", apiKey); // bez "Bearer"
+
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+
+                var body = new { coordinates = coordinates };
+                var json = JsonSerializer.Serialize(body);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("https://api.openrouteservice.org/v2/directions/driving-car", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorDetails = await response.Content.ReadAsStringAsync();
+                    return StatusCode((int)response.StatusCode, $"Greška iz OpenRouteService API-ja: {errorDetails}");
+                }
+
+                var result = await response.Content.ReadAsStringAsync();
+                return Content(result, "application/json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Greška na serveru: {ex.Message}\n{ex.StackTrace}");
+            }
         }
 
 

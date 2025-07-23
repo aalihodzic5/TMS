@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
+using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TMS.Controllers
 {
+    [Authorize(Roles = "Dispatcher, Administrator")]
     public class TruckController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Ruta između lokacija";
+}
+
+<h3>Unesi lokacije</h3>
+<form id="routeForm">
+    <label for="start">Početna lokacija:</label>
+    <input type="text" id="start" required placeholder="npr. Sarajevo" class="form-control" autocomplete="off" />
+
+    <label for="end">Krajnja lokacija:</label>
+    <input type="text" id="end" required placeholder="npr. Mostar" class="form-control" autocomplete="off" />
+
+    <button type="submit" class="btn btn-primary mt-2">Prikaži rutu</button>
+</form>
+
+<hr />
+<div id="map" style="height: 600px; width: 100%; margin-top: 20px;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+<script>
+    const map = L.map('map').setView([43.8563, 18.4131], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let routeLine = null;
+    let markers = [];
+
+    // Geokodiranje preko Nominatim
+    async function geocodeLocation(location) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.length > 0) {
+            return {
+                lat: parseFloat(data[0].lat),
+                lng: parseFloat(data[0].lon)
+            };
+        } else {
+            throw new Error(`Lokacija nije pronađena: ${location}`);
+        }
+    }
+
+    document.getElementById("routeForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const startLocation = document.getElementById("start").value;
+        const endLocation = document.getElementById("end").value;
+
+        try {
+            const start = await geocodeLocation(startLocation);
+            const end = await geocodeLocation(endLocation);
+
+            // Očisti staru rutu i markere
+            if (routeLine) map.removeLayer(routeLine);
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            const startMarker = L.marker([start.lat, start.lng]).addTo(map).bindPopup("Start").openPopup();
+            const endMarker = L.marker([end.lat, end.lng]).addTo(map).bindPopup("End");
+            markers.push(startMarker, endMarker);
+
+            // Poziv backenda za generisanje rute
+            const response = await fetch('/Job/GetRoute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([
+                    [start.lng, start.lat],
+                    [end.lng, end.lat]
+                ])
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error("Greška prilikom dohvata rute:\n" + errorMessage);
+            }
+
+            const data = await response.json();
+
+            if (!data || !data.features || !data.features[0]) {
+                alert("Ruta nije pronađena.");
+                return;
+            }
+
+            const coords = data.features[0].geometry.coordinates;
+            const latlngs = coords.map(c => [c[1], c[0]]);
+            routeLine = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+            map.fitBounds(routeLine.getBounds());
+
+            const distanceKm = data.features[0].properties.summary.distance / 1000;
+            alert(`Udaljenost: ${distanceKm.toFixed(2)} km`);
+
+        } catch (err) {
+            console.error("Greška:", err);
+            alert("Došlo je do greške: " + err.message);
+        }
+    });
+</script>

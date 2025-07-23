@@ -19,6 +19,7 @@ using static System.Collections.Specialized.BitVector32;
 namespace TMS.Controllers
 {
     [Authorize]
+    [Authorize(Roles = "Dispatcher, Administrator")]
     public class DriverController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -30,11 +31,24 @@ namespace TMS.Controllers
             _userManager = userManager;
         }
 
+
+
         // GET: Driver
+
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Driver.Include(d => d.Truck).ToListAsync());
+            var userId = _userManager.GetUserId(User);
+
+            var drivers = await _context.Driver
+                .Include(d => d.Truck)
+                .Where(d =>
+                    (d.Truck != null && d.Truck.UserID == userId) ||
+                    (d.Truck == null && d.UserID == userId))
+                .ToListAsync();
+
+            return View(drivers);
         }
+
 
         // GET: Driver/Details/5
         public async Task<IActionResult> Details(int id)
@@ -49,17 +63,36 @@ namespace TMS.Controllers
             return View(driver);
         }
 
+        //GET: Driver/Create
+        // GET: Driver/Create
         public async Task<IActionResult> Create()
         {
-            await PopulateDropdownsAsync();
-            return View();
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.GetUserAsync(User);
+
+            ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}";
+
+            var driver = new Driver
+            {
+                UserID = userId
+            };
+
+            await PopulateDropdownsAsync(userId);
+            return View(driver);
         }
+
 
         // POST: Driver/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,PhoneNumber,DateOfBirth,TruckId,UserID,DriverStatus")] Driver driver)
         {
+
+            driver.UserID = _userManager.GetUserId(User);
+            var user = await _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}"; // pretpostavljam da koristiš ta polja
+            ViewBag.CurrentUserID = user.Id;
+
             if (ModelState.IsValid)
             {
                 _context.Add(driver);

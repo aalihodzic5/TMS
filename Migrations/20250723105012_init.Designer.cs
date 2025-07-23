@@ -12,8 +12,8 @@ using TMS.Data;
 namespace TMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250721101837_MakeDriverIdNullable")]
-    partial class MakeDriverIdNullable
+    [Migration("20250723105012_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -480,6 +480,9 @@ namespace TMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -503,6 +506,8 @@ namespace TMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Truck", (string)null);
                 });
@@ -752,6 +757,15 @@ namespace TMS.Migrations
                         .IsRequired();
 
                     b.Navigation("Truck");
+                });
+
+            modelBuilder.Entity("TMS.Models.Truck", b =>
+                {
+                    b.HasOne("TMS.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TMS.Models.Driver", b =>
