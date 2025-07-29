@@ -79,8 +79,14 @@ namespace TMS.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // ⬇️ OVO DODAJ
+            ViewBag.TrailerTypes = new SelectList(Enum.GetValues(typeof(TrailerTypes)));
+            ViewBag.LoadTypes = new SelectList(Enum.GetValues(typeof(LoadType)));
+
             return View(job);
         }
+
 
         // GET: Job/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -103,7 +109,7 @@ namespace TMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,loadDate,trailerType,loadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,loadDate,TrailerType,LoadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
         {
             if (id != job.Id)
             {
@@ -173,7 +179,7 @@ namespace TMS.Controllers
 
 
         //Filter forms
-
+        // GET: Job/FilterForm
 
         private string GetCurrentDispatcherId()
         {
@@ -181,14 +187,41 @@ namespace TMS.Controllers
         }
 
 
+
+
         [Authorize(Roles = "Dispatcher, Administrator")]
-        
-        public IActionResult Filter()
+
+        public IActionResult Filter(
+        string? DriverId,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        LoadType? loadType,
+        TrailerTypes? trailerType,
+        double? minDistanceLoad,
+        double? maxDistanceLoad,
+        double? minDistanceUnload,
+        double? maxDistanceUnload,
+        decimal? minPrice,
+        decimal? maxPrice,
+        string? destinationLoad,
+        string? destinationUnload,
+        string? companyName,
+        double? weight,
+        double? length
+)
+
         {
-            string dispatcherId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            //Console.WriteLine("Filter metoda pozvana");
+            var dispatcherIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            if(dispatcherIdClaim == null)
+            {
+                return Unauthorized(); // Ako nije prijavljen, vrati Unauthorized
+            }
+            string dispatcherId = dispatcherIdClaim;
 
             var drivers = _context.Driver
-                .Where(d => d.Id.ToString() == dispatcherId)
+                .Where(d => d.UserID == dispatcherId) // filtrira vozače po dispatcheru koji ih je dodao
                 .Select(d => new SelectListItem
                 {
                     Value = d.Id.ToString(),
@@ -196,11 +229,105 @@ namespace TMS.Controllers
                 }).ToList();
 
             ViewBag.DriverList = drivers;
+            ViewBag.TrailerTypes = new SelectList(Enum.GetValues(typeof(TrailerTypes)));
+            ViewBag.LoadTypes = new SelectList(Enum.GetValues(typeof(LoadType)));
 
-            var jobs = _context.Job.Where(j => j.DriverId == null).ToList();
+            var jobs = _context.Job.AsQueryable();
+            
+            if(!string.IsNullOrEmpty(DriverId) && int.TryParse(DriverId, out int driverId))
+            {   
+                jobs = jobs.Where(j => j.DriverId == driverId);
+            }
+            if (dateFrom.HasValue)
+            {  
+                jobs = jobs.Where(j => j.loadDate.Date >= dateFrom.Value.Date);
+            }
+            if (dateTo.HasValue)
+            {   
+                jobs = jobs.Where(j => j.loadDate.Date <= dateTo.Value.Date);
+            }
+            if (trailerType.HasValue) 
+            {   
+                jobs = jobs.Where(j => j.TrailerTypes == trailerType.Value);  
+            }
+            if (loadType.HasValue) 
+            {   
+                jobs = jobs.Where(j => j.LoadType == loadType.Value);
+            }
+            if (minDistanceLoad.HasValue) 
+            {   
+                jobs = jobs.Where(j => j.distanceOrigin >= minDistanceLoad.Value);
+            }
+            if (maxDistanceLoad.HasValue) 
+            {  
+                jobs = jobs.Where(j => j.distanceOrigin <= maxDistanceLoad.Value);
+            }
+            if (minDistanceUnload.HasValue)
+            {   
+                jobs = jobs.Where(j => j.distanceDestination >= minDistanceUnload.Value);
+            }
+            if (maxDistanceUnload.HasValue)
+            {   
+                jobs = jobs.Where(j => j.distanceDestination <= maxDistanceUnload.Value);
+            }
+            if (minPrice.HasValue) 
+            {  
+                jobs = jobs.Where(j => j.price >= minPrice.Value);
+            }
+            if(maxPrice.HasValue) 
+            {   
+                jobs = jobs.Where(j => j.price <= maxPrice.Value);
+            }
+            if (!string.IsNullOrEmpty(destinationLoad)) 
+            {  
+                jobs = jobs.Where(j => j.locationOrigin.Contains(destinationLoad.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(destinationUnload)) 
+            {   
+                jobs = jobs.Where(j => j.locationDestination.Contains(destinationUnload.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(companyName)) 
+            {   
+                jobs = jobs.Where(j => j.companyName.Contains(companyName.ToLower()));
+            }
+            if (weight.HasValue) 
+            {     
+                jobs = jobs.Where(j => j.loadWeight <= 1.05*weight.Value && j.loadWeight >= 0.95 * weight.Value);
+            }
+            if (length.HasValue) 
+            {   
+                jobs = jobs.Where(j => j.loadLength <= 1.05*length.Value && j.loadLength >= 0.95 * length.Value);
+            }
+            
+            
 
-            return View(jobs);
+
+            return View(jobs.ToList());
         }
+
+
+
+
+        // POST: Job/FilterForm
+
+        [HttpPost]
+        [Authorize(Roles = "Dispatcher, Administrator")]
+        public async Task<IActionResult> AssignDriver(int jobId, int driverId)
+        {
+            var job = await _context.Job.FindAsync(jobId);
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+            job.DriverId = driverId;
+            await _context.SaveChangesAsync();
+
+            // Vrati se nazad na Filter akciju da sve bude ispravno prikazano
+            return RedirectToAction("Filter");
+        }
+
+        
 
         //MAPS
         public IActionResult Map()

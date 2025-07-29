@@ -21,7 +21,7 @@ namespace TMS.Models
 
         [EnumDataType(typeof(LoadType))]
         public LoadType LoadType { get; set; }
-        public double distanceOrigin { get; set; }
+        public double? distanceOrigin { get; set; }
         public double distanceDestination { get; set; }
         public string locationOrigin { get; set; } = default!;
         public string locationDestination { get; set; } = default!;

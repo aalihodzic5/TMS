@@ -3,74 +3,150 @@
     ViewData["Title"] = "Filter";
 }
 
-<h2>Filter</h2>
 
-<form method="get" class="row mb-4">
-    <div class="col-md-3">
-        <label>Vozač</label>
-        <select name="vozacId" class="form-control">
-            <option value="">-- Odaberi vozača --</option>
-            @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
-            {
-                <option value="@driver.Value">@driver.Text</option>
-            }
-        </select>
+
+<form method="get" class="mb-4">
+
+    <div class="row">
+        <div class="col-md-3">
+            <label>Driver</label>
+            <select name="DriverId" class="form-control">
+                <option value="">-- Select driver --</option>
+                @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+                {
+                    <option value="@driver.Value">@driver.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Min price</label>
+            <input type="number" name="minPrice" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Date From</label>
+            <input type="date" name="dateFrom" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Min distance (Load)</label>
+            <input type="number" name="minDistanceLoad" class="form-control" />
+        </div>
     </div>
 
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <label>Load type</label>
+            <select name="loadType" class="form-control">
+                <option value="">-- Select load type --</option>
+                @foreach (var loadType in (SelectList)ViewBag.LoadTypes)
+                {
+                    <option value="@loadType.Value">@loadType.Text</option>
+                }
+            </select>
+        </div>
 
-    <div class="col-md-3">
-        <label>Tip prikolice</label><br />
-        <input type="checkbox" name="tipPrikolice" value="C" /> C<br />
-        <input type="checkbox" name="tipPrikolice" value="P" /> P<br />
+        <div class="col-md-3">
+            <label>Max price</label>
+            <input type="number" name="maxPrice" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Date To</label>
+            <input type="date" name="dateTo" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Max distance (Load)</label>
+            <input type="number" name="maxDistanceLoad" class="form-control" />
+        </div>
     </div>
 
-    <div class="col-md-3">
-        <label>Tip utovara</label><br />
-        <input type="checkbox" name="utovar" value="Pun" /> Pun<br />
-        <input type="checkbox" name="utovar" value="Djelimican" /> Djelimičan<br />
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <label>Trailer type</label>
+            <select name="trailerType" class="form-control">
+                <option value="">-- Select trailer type --</option>
+                @foreach (var trailerType in (SelectList)ViewBag.TrailerTypes)
+                {
+                    <option value="@trailerType.Value">@trailerType.Text</option>
+                }
+            </select>
+        </div>
+
+        
+        <div class="col-md-3">
+            <label>Company</label>
+            <input type="text" name="companyName" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Destination (Load)</label>
+            <input type="text" name="destinationLoad" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Min Distance (Unload)</label>
+            <input type="number" name="minDistanceUnload" class="form-control" />
+        </div>
     </div>
 
-    <div class="col-md-3">
-        <label>Datum</label><br />
-        <input type="date" name="datum" class="form-control" />
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <label>Weight(+-5%)</label>
+            <input type="text" name="weight" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Length(+-5%)</label>
+            <input type="text" name="length" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Destination (Unload)</label>
+            <input type="text" name="destinationUnload" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Max Distance (Unload)</label>
+            <input type="number" name="maxDistanceUnload" class="form-control" />
+        </div>
     </div>
 
-    <div class="col-md-3 mt-2">
-        <label>Min udaljenost</label>
-        <input type="number" name="minUdaljenost" class="form-control" />
-    </div>
-    <div class="col-md-3 mt-2">
-        <label>Max udaljenost</label>
-        <input type="number" name="maxUdaljenost" class="form-control" />
-    </div>
+    
 
-    <div class="col-md-3 mt-2">
-        <label>Minimalna cijena</label>
-        <input type="number" name="minCijena" class="form-control" />
-    </div>
-
-    <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary">Primijeni filter</button>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary w-100">Primijeni filter</button>
+        </div>
     </div>
 </form>
 
+<hr />
+
+<!-- Rezultati -->
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>Polazište</th>
-            <th>Odredište</th>
-            <th>Datum</th>
-            <th>Prikolica</th>
-            <th>Teret</th>
-            <th>Udaljenost</th>
-            <th>Cijena</th>
-            <th>Dodijeli</th>
+            <th>Published</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Date</th>
+            <th>Trailer Type</th>
+            <th>Load Type</th>
+            <th>Distance</th>
+            <th>Price</th>
+            <th>Save</th>
+            <th>Offer</th>
+            <th>Assign</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var job in Model)
         {
             <tr>
+                <td>@job.postingDate</td>
                 <td>@job.locationOrigin</td>
                 <td>@job.locationDestination</td>
                 <td>@job.loadDate.ToShortDateString()</td>
@@ -81,6 +157,28 @@
                 <td>
                     <input type="checkbox" name="assign_@job.Id" />
                 </td>
+                <td>
+                    <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="jobId" value="@job.Id" />
+                        <input type="number" name="price" class="form-control form-control-sm" step="0.01" placeholder="€" required style="width: 80px;" />
+                        <button type="submit" class="btn btn-success btn-sm ms-1">✔</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" asp-action="AssignDriver" class="d-flex align-items-center">
+                        <input type="hidden" name="jobId" value="@job.Id" />
+                        <select name="driverId" class="form-select form-select-sm">
+                            <option value="">--</option>
+                            @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+                            {
+                                <option value="@driver.Value">@driver.Text</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success ms-1">✔</button>
+                    </form>
+                </td>
+
             </tr>
         }
     </tbody>

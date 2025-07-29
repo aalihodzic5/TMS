@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
+using TMS.Models.Enums;
 
 namespace TMS.Controllers
 {
@@ -153,5 +156,50 @@ namespace TMS.Controllers
         {
             return _context.Offer.Any(e => e.Id == id);
         }
+
+
+        //POST : SendOffer
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Dispatcher")]
+        public async Task<IActionResult> SendOffer(int jobId, decimal offerPrice) 
+        {
+            var job = await _context.Job.FindAsync(jobId);
+
+            if (job == null)
+            {
+               return NotFound();
+            }
+
+            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            if (userClaim == null)
+            {
+                return Unauthorized(); // Ako nije prijavljen, vrati Unauthorized
+            }
+            string userId = userClaim;
+
+            var offer = new Offer
+            {
+                JobId = jobId,
+                price = offerPrice,
+                offerDate = DateTime.Now,
+                offerState = OfferState.PENDING,
+                report = "Offer sent by " + User.Identity!.Name + " for job " + jobId,
+
+            };
+
+            _context.Add(offer);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Offer successfully sent for job ID: " + jobId;
+
+            return RedirectToAction("Filter", "Job");
+
+
+        }
+
+
+
     }
 }
