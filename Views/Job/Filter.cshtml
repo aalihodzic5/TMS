@@ -3,7 +3,7 @@
     ViewData["Title"] = "Filter";
 }
 
-
+@using System.Text.Json
 
 <form method="get" class="mb-4">
 
@@ -183,3 +183,12 @@
         }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script>
+        const searchResults = @Html.Raw(JsonSerializer.Serialize(Model));
+        localStorage.setItem("searchResults", JSON.stringify(searchResults));
+    </script>
+}
+

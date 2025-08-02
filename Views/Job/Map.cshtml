@@ -16,7 +16,29 @@
 <p class="mt-3"><strong>Ili klikni na mapu:</strong> Prvi klik postavlja početak, drugi klik kraj rute.</p>
 
 <hr />
-<div id="map" style="height: 600px; width: 100%; margin-top: 20px;"></div>
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div id="map" style="height: 600px; width: 100%;"></div>
+    </div>
+    <div class="col-md-4">
+        <h5>Rezultati iz filtera</h5>
+        <div style="max-height: 600px; overflow-y: auto;">
+            <table id="localResultsTable" class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Origin</th>
+                        <th>Dest.</th>
+                        <th>Cijena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS će ubaciti redove ovdje -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
@@ -174,3 +196,48 @@
         }
     });
 </script>
+
+
+<script>
+    const storedResults = JSON.parse(localStorage.getItem("searchResults") || "[]");
+    const tableBody = document.querySelector("#localResultsTable tbody");
+
+    if (storedResults.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>Nema spremljenih podataka.</td></tr>";
+    } else {
+        storedResults.forEach(job => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${new Date(job.postingDate).toLocaleDateString()}</td>
+                <td>${job.locationOrigin || "-"}</td>
+                <td>${job.locationDestination || "-"}</td>
+                <td>${job.price?.toFixed(2) || "0.00"} €</td>
+            `;
+
+            // Opcionalno: klik na red prikazuje rutu (ako imaš dodatne koordinate)
+            row.addEventListener("click", async () => {
+                try {
+                    const start = await geocodeLocation(job.locationOrigin);
+                    const end = await geocodeLocation(job.locationDestination);
+                    markers.forEach(m => map.removeLayer(m));
+                    markers = [];
+
+                    if (routeLine) map.removeLayer(routeLine);
+
+                    const markerStart = L.marker([start.lat, start.lng]).addTo(map).bindPopup("Start").openPopup();
+                    const markerEnd = L.marker([end.lat, end.lng]).addTo(map).bindPopup("End").openPopup();
+
+                    markers.push(markerStart, markerEnd);
+
+                    await getRoute([start.lng, start.lat], [end.lng, end.lat]);
+                } catch (error) {
+                    alert("Ne mogu prikazati rutu: " + error.message);
+                }
+            });
+
+            tableBody.appendChild(row);
+        });
+    }
+</script>
+
