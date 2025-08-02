@@ -1,7 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Ruta između lokacija";
+    ViewData["Title"] = "Jobs in map view";
 }
 
+<!--
 <h3>Unesi lokacije</h3>
 <form id="routeForm">
     <label for="start">Početna lokacija:</label>
@@ -15,13 +16,21 @@
 
 <p class="mt-3"><strong>Ili klikni na mapu:</strong> Prvi klik postavlja početak, drugi klik kraj rute.</p>
 
+-->
+
 <hr />
 <div class="row mt-4">
     <div class="col-md-8">
         <div id="map" style="height: 600px; width: 100%;"></div>
     </div>
     <div class="col-md-4">
-        <h5>Rezultati iz filtera</h5>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">Results</h5>
+            <a href="/Job/Filter" class="btn btn-outline-secondary btn-sm" title="Back to filter">
+                <i class="bi bi-funnel-fill"></i> Back to Filter
+            </a>
+        </div>
+
         <div style="max-height: 600px; overflow-y: auto;">
             <table id="localResultsTable" class="table table-sm table-bordered table-striped">
                 <thead>
