@@ -13,11 +13,18 @@
     <button type="submit" class="btn btn-primary mt-2">Prikaži rutu</button>
 </form>
 
+<p class="mt-3"><strong>Ili klikni na mapu:</strong> Prvi klik postavlja početak, drugi klik kraj rute.</p>
+
 <hr />
 <div id="map" style="height: 600px; width: 100%; margin-top: 20px;"></div>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
 
 <script>
     const map = L.map('map').setView([43.8563, 18.4131], 7);
@@ -25,11 +32,12 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-
+    
     let routeLine = null;
     let markers = [];
+    let clickedPoints = [];
 
-    // Geokodiranje preko Nominatim
+    // Geokodiranje (tekst → koordinate)
     async function geocodeLocation(location) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
         const response = await fetch(url);
@@ -44,6 +52,101 @@
         }
     }
 
+    // Reverse geokodiranje (koordinate → adresa)
+    async function reverseGeocode(lat, lng) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.display_name || "Nepoznata lokacija";
+    }
+
+    // Rutiranje
+    async function getRoute(start, end) {
+
+        const response = await fetch('/Job/GetRoute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify([start, end])
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error("Greška prilikom dohvata rute:\n" + errorMessage);
+        }
+
+        const data = await response.json();
+
+        if (!data) {
+            alert("Ruta nije pronađena.");
+            return;
+        }
+
+        
+        const coords = data.routes[0].geometry.coordinates;
+        addRouteToMap(coords);
+        //const latlngs = coords.map(c => [c[1], c[0]]);
+        //routeLine = L.polyline(coords, { color: 'blue' }).addTo(map);
+        //map.fitBounds(routeLine.getBounds());
+
+        //const distanceKm = data.routes[0].properties.summary.distance / 1000;
+        //alert(`Udaljenost: ${distanceKm.toFixed(2)} km`);
+        
+    }
+
+            function addRouteToMap(coordinates) {
+        const latlngs = coordinates.map(c => [c[1], c[0]]); // [lng, lat] → [lat, lng]
+
+        if (routeLine) {
+            map.removeLayer(routeLine);
+        }
+
+        routeLine = L.polyline(latlngs, {
+            color: 'blue',
+            weight: 5,
+            opacity: 0.8
+        }).addTo(map);
+
+        map.fitBounds(routeLine.getBounds());
+    }
+
+
+    // Klikom na mapu
+    map.on('click', async function (e) {
+        const { lat, lng } = e.latlng;
+
+        if (clickedPoints.length >= 2) {
+            // Resetuj sve
+            clickedPoints = [];
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            if (routeLine) map.removeLayer(routeLine);
+        }
+
+        clickedPoints.push([lng, lat]);
+
+        const label = clickedPoints.length === 1 ? "Start" : "End";
+        const iconUrl = clickedPoints.length === 1
+            ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+            : 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+        const marker = L.marker([lat, lng], {
+            icon: L.icon({
+                iconUrl: iconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32]
+            })
+        }).addTo(map);
+
+        const address = await reverseGeocode(lat, lng);
+        marker.bindPopup(`${label}:<br>${address}`).openPopup();
+        markers.push(marker);
+
+        if (clickedPoints.length === 2) {
+            await getRoute(clickedPoints[0], clickedPoints[1]);
+        }
+    });
+
+    // Unos kroz formu
     document.getElementById("routeForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -54,47 +157,17 @@
             const start = await geocodeLocation(startLocation);
             const end = await geocodeLocation(endLocation);
 
-            // Očisti staru rutu i markere
+            // Reset
             if (routeLine) map.removeLayer(routeLine);
             markers.forEach(m => map.removeLayer(m));
             markers = [];
+            clickedPoints = [];
 
             const startMarker = L.marker([start.lat, start.lng]).addTo(map).bindPopup("Start").openPopup();
             const endMarker = L.marker([end.lat, end.lng]).addTo(map).bindPopup("End");
             markers.push(startMarker, endMarker);
 
-            // Poziv backenda za generisanje rute
-            const response = await fetch('/Job/GetRoute', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify([
-                    [start.lng, start.lat],
-                    [end.lng, end.lat]
-                ])
-            });
-
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw new Error("Greška prilikom dohvata rute:\n" + errorMessage);
-            }
-
-            const data = await response.json();
-
-            if (!data || !data.features || !data.features[0]) {
-                alert("Ruta nije pronađena.");
-                return;
-            }
-
-            const coords = data.features[0].geometry.coordinates;
-            const latlngs = coords.map(c => [c[1], c[0]]);
-            routeLine = L.polyline(latlngs, { color: 'blue' }).addTo(map);
-            map.fitBounds(routeLine.getBounds());
-
-            const distanceKm = data.features[0].properties.summary.distance / 1000;
-            alert(`Udaljenost: ${distanceKm.toFixed(2)} km`);
-
+            await getRoute([start.lng, start.lat], [end.lng, end.lat]);
         } catch (err) {
             console.error("Greška:", err);
             alert("Došlo je do greške: " + err.message);

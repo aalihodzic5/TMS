@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
-
-using System.Text.Json;
-using System.Net.Http;
 
 
 
@@ -340,23 +340,24 @@ namespace TMS.Controllers
         {
             try
             {
+                if (coordinates == null || coordinates.Count < 2)
+                    return BadRequest("Morate unijeti barem dvije tačke za rutu.");
+
+                var accessToken = _config["Mapbox:AccessToken"];
+
+                // Mapbox traži redoslijed: lng,lat
+                var coordsStr = string.Join(";", coordinates.Select(coord =>
+                    $"{coord[0].ToString(CultureInfo.InvariantCulture)},{coord[1].ToString(CultureInfo.InvariantCulture)}"));
+
+                var url = $"https://api.mapbox.com/directions/v5/mapbox/driving/{coordsStr}?geometries=geojson&access_token={accessToken}";
+
                 var client = new HttpClient();
-                var apiKey = _config["OpenRouteService:ApiKey"];
-                //client.DefaultRequestHeaders.Add("Authorization", apiKey); // bez "Bearer"
-
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-
-                var body = new { coordinates = coordinates };
-                var json = JsonSerializer.Serialize(body);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync("https://api.openrouteservice.org/v2/directions/driving-car", content);
+                var response = await client.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorDetails = await response.Content.ReadAsStringAsync();
-                    return StatusCode((int)response.StatusCode, $"Greška iz OpenRouteService API-ja: {errorDetails}");
+                    return StatusCode((int)response.StatusCode, $"Greška iz Mapbox API-ja: {errorDetails}");
                 }
 
                 var result = await response.Content.ReadAsStringAsync();
@@ -367,6 +368,9 @@ namespace TMS.Controllers
                 return StatusCode(500, $"Greška na serveru: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
+
+
 
 
     }

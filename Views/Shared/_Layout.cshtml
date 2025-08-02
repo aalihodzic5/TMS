@@ -65,6 +65,7 @@
                 @if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
                 {
                     <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Find Job</a>
+                    <a class="nav-link text-dark" asp-controller = "Offer" asp-action="Index">Offer</a>
                     <a class="nav-link text-dark" asp-controller="Job" asp-action="Map">Maps</a>
                     <a class="nav-link text-dark" asp-controller="Comparator" asp-action="Index">Comparator</a>
                     <a class="nav-link text-dark" asp-controller="Truck" asp-action="Index">Trucks</a>
