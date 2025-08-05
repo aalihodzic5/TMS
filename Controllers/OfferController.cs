@@ -172,16 +172,27 @@ namespace TMS.Controllers
                return NotFound();
             }
 
-            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            string userClaim = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             if (userClaim == null)
             {
                 return Unauthorized(); // Ako nije prijavljen, vrati Unauthorized
             }
             string userId = userClaim;
 
+            int userOfferCount = await _context.Offer.CountAsync(o => o.JobId == jobId && o.UserId == userId);
+
+            if (userOfferCount >= 2)
+            {
+                TempData["ErrorMessage"] = "Max number of offers is 2";
+                return RedirectToAction("Filter", "Job");
+            }
+
+            if(offerPrice == 0)offerPrice = job.price; // Ako je cijena 0, postavi na cijenu posla
+
             var offer = new Offer
             {
                 JobId = jobId,
+                UserId = userId,
                 price = offerPrice,
                 offerDate = DateTime.Now,
                 offerState = OfferState.PENDING,
@@ -194,7 +205,7 @@ namespace TMS.Controllers
 
             TempData["SuccessMessage"] = "Offer successfully sent for job ID: " + jobId;
 
-            return RedirectToAction("Filter", "Job");
+            return RedirectToAction("Index", "Offer");
 
 
         }

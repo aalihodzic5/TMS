@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TMS.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InicijalnaMigracija : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -288,7 +288,7 @@ namespace TMS.Migrations
                     loadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrailerTypes = table.Column<int>(type: "int", nullable: false),
                     LoadType = table.Column<int>(type: "int", nullable: false),
-                    distanceOrigin = table.Column<double>(type: "float", nullable: false),
+                    distanceOrigin = table.Column<double>(type: "float", nullable: true),
                     distanceDestination = table.Column<double>(type: "float", nullable: false),
                     locationOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     locationDestination = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -316,6 +316,7 @@ namespace TMS.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     JobId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     report = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     offerDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),

@@ -171,7 +171,7 @@
                     <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="jobId" value="@job.Id" />
-                        <input type="number" name="price" class="form-control form-control-sm" step="0.01" placeholder="€" required style="width: 80px;" />
+                        <input type="number" name="offerPrice" class="form-control form-control-sm" step="0.01" placeholder="€" required style="width: 80px;" />
                         <button type="submit" class="btn btn-success btn-sm ms-1">✔</button>
                     </form>
                 </td>

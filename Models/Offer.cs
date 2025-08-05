@@ -13,6 +13,9 @@ namespace TMS.Models
         [ForeignKey("Job")]
         public int JobId { get; set; }
 
+        [ForeignKey("User")]
+        public string UserId { get; set; } = default!;
+
         public Job Job { get; set; } = default!;
         public String report { get; set; } = default!;
         public DateTime offerDate { get; set; }

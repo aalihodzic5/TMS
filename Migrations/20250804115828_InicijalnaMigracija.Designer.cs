@@ -12,8 +12,8 @@ using TMS.Data;
 namespace TMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250723105012_init")]
-    partial class init
+    [Migration("20250804115828_InicijalnaMigracija")]
+    partial class InicijalnaMigracija
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -252,7 +252,7 @@ namespace TMS.Migrations
                     b.Property<double>("distanceDestination")
                         .HasColumnType("float");
 
-                    b.Property<double>("distanceOrigin")
+                    b.Property<double?>("distanceOrigin")
                         .HasColumnType("float");
 
                     b.Property<DateTime>("loadDate")
@@ -325,6 +325,10 @@ namespace TMS.Migrations
 
                     b.Property<int>("JobId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("offerDate")
                         .HasColumnType("datetime2");

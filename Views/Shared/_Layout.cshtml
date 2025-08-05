@@ -65,7 +65,6 @@
                 @if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
                 {
                     <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Find Job</a>
-                    <a class="nav-link text-dark" asp-controller = "Offer" asp-action="Index">Offer</a>
                     <a class="nav-link text-dark" asp-controller="Job" asp-action="Map">Maps</a>
                     <a class="nav-link text-dark" asp-controller="Comparator" asp-action="Index">Comparator</a>
                     <a class="nav-link text-dark" asp-controller="Truck" asp-action="Index">Trucks</a>
@@ -77,7 +76,7 @@
 
                 @if (User.IsInRole("Administrator") || User.IsInRole("Broker") || User.IsInRole("Dispatcher"))
                 {
-
+                <a class="nav-link text-dark" asp-controller="Offer" asp-action="Index">Offer</a>
                 <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Reports</a>
                 <div class="section-separator"></div>
                 <a class="nav-link text-dark" asp-controller="Notifications" asp-action="Index">Notifications</a>
