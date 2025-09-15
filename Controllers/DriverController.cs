@@ -69,6 +69,7 @@ namespace TMS.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var user = await _userManager.GetUserAsync(User);
+            
 
             ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}";
 
@@ -90,7 +91,7 @@ namespace TMS.Controllers
 
             driver.UserID = _userManager.GetUserId(User);
             var user = await _userManager.GetUserAsync(User);
-            ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}"; // pretpostavljam da koristiš ta polja
+            ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}"; 
             ViewBag.CurrentUserID = user.Id;
 
             if (ModelState.IsValid)

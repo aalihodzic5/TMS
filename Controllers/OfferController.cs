@@ -27,6 +27,7 @@ namespace TMS.Controllers
 
         // GET: /Offer/Accept/5
         [HttpGet]
+        [Authorize(Roles = "Administrator, Broker")]
         public async Task<IActionResult> Accept(int? id)
         {
 
@@ -43,13 +44,13 @@ namespace TMS.Controllers
         // POST: /Offer/Accept
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Accept(Offer model)
+        [Authorize(Roles = "Administrator, Broker")]
+        public async Task<IActionResult> Accept(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.OfferStates = new SelectList(Enum.GetValues(typeof(OfferState)));
-                return View(model);
-            }
+            var model = await _context.Offer.FindAsync(id);
+            if (model == null) return NotFound();
+
+            model.offerState = OfferState.ACCEPTED;
 
             _context.Update(model);
             await _context.SaveChangesAsync();
@@ -89,11 +90,11 @@ namespace TMS.Controllers
         }
 
         // GET: Offer/Create
-        public IActionResult Create()
+        /*public IActionResult Create()
         {
             return View();
         }
-
+        */
         // POST: Offer/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -184,7 +185,7 @@ namespace TMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var offer = await _context.Offer.FindAsync(id);
+            var offer = await _context.Offer.FindAsync(int.Parse(id));
             if (offer != null)
             {
                 _context.Offer.Remove(offer);

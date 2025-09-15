@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
+using Microsoft.AspNetCore.Identity;
 
 
 
@@ -17,39 +18,62 @@ namespace TMS.Controllers
     public class TrailerController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public TrailerController(ApplicationDbContext context)
+        public TrailerController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
+        private async Task PopulateTruckDropdownAsync(string userId, int? selectedTruckId = null)
+        {
+            var trucks = await _context.Truck
+                .Where(t => t.UserID == userId)
+                .Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.licensePlate,
+                    Selected = (selectedTruckId != null && t.Id == selectedTruckId)
+                })
+                .ToListAsync();
+
+            ViewBag.TruckList = trucks;  //  List<SelectListItem>
+        }
+
 
         // GET: Trailer
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Trailer.ToListAsync());
+            var userId = _userManager.GetUserId(User);
+
+            var trailers = await _context.Trailer
+            .Include(t => t.Truck)
+            .Where(t => t.Truck != null && t.Truck.UserID == userId)
+            .ToListAsync();
+
+            return View(trailers);
         }
 
         // GET: Trailer/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userId = _userManager.GetUserId(User);
 
             var trailer = await _context.Trailer
-                .FirstOrDefaultAsync(m => m.Id == int.Parse(id));
-            if (trailer == null)
-            {
-                return NotFound();
-            }
+                .Include(t => t.Truck)
+                .FirstOrDefaultAsync(m => m.Id == id && m.Truck != null && m.Truck.UserID == userId);
 
+            if (trailer == null) return NotFound();
             return View(trailer);
         }
 
         // GET: Trailer/Create
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
+            var userId = _userManager.GetUserId(User);
+            await PopulateTruckDropdownAsync(userId);
             return View();
         }
 
@@ -60,13 +84,25 @@ namespace TMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,brand,trailerType,licensePlate,registration,nextServiceDate,specification,TruckId")] Trailer trailer)
         {
-            if (ModelState.IsValid)
+            var userId = _userManager.GetUserId(User);
+
+            // serverska validacija: TruckId mora pripadati useru
+            if (trailer.TruckId != 0) // Fix: Replaced HasValue with a check for non-zero value
             {
-                _context.Add(trailer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var isMine = await _context.Truck.AnyAsync(t => t.Id == trailer.TruckId && t.UserID == userId);
+                if (!isMine)
+                    ModelState.AddModelError("TruckId", "Odabrani kamion ne pripada vašem nalogu.");
             }
-            return View(trailer);
+
+            if (!ModelState.IsValid)
+            {
+                await PopulateTruckDropdownAsync(userId, trailer.TruckId);
+                return View(trailer);
+            }
+
+            _context.Add(trailer);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Trailer/Edit/5
