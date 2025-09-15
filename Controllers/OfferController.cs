@@ -22,11 +22,53 @@ namespace TMS.Controllers
             _context = context;
         }
 
-        // GET: Offer
+
+
+
+        // GET: /Offer/Accept/5
+        [HttpGet]
+        public async Task<IActionResult> Accept(int? id)
+        {
+
+            if (id == null || id <= 0)
+                return BadRequest("OfferId can not be null");
+
+            var offer = await _context.Offer.FindAsync(id);
+            if (offer == null) return NotFound();
+
+            ViewBag.OfferStates = new SelectList(Enum.GetValues(typeof(OfferState)));
+            return View(offer);
+        }
+
+        // POST: /Offer/Accept
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Accept(Offer model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.OfferStates = new SelectList(Enum.GetValues(typeof(OfferState)));
+                return View(model);
+            }
+
+            _context.Update(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+
+
+
+        // GET: Offer/Index
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Offer.ToListAsync());
+            var offers = await _context.Offer
+                .Include(o => o.Job)   // učitaj povezani Job
+                .ToListAsync();
+
+            return View(offers);
         }
+
 
         // GET: Offer/Details/5
         public async Task<IActionResult> Details(string id)

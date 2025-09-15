@@ -30,6 +30,9 @@
                 @Html.DisplayNameFor(model => model.price)
             </th>
             <th>
+                Price
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.offerState)
             </th>
             <th></th>
@@ -56,10 +59,16 @@
                 @Html.DisplayFor(modelItem => item.price)
             </td>
             <td>
+                @item.Job.price
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.offerState)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Offer" asp-action="Accept" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                        Accept
+                    </a>
+                    |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>

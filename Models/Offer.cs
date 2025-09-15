@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TMS.Models.Enums;
@@ -21,6 +22,7 @@ namespace TMS.Models
         public DateTime offerDate { get; set; }
 
         [Precision(18, 2)]
+        [DisplayName("Offer Price")]
         public decimal price { get; set; }
 
         [EnumDataType(typeof(OfferState))]

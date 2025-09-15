@@ -12,8 +12,8 @@ using TMS.Data;
 namespace TMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250804115828_InicijalnaMigracija")]
-    partial class InicijalnaMigracija
+    [Migration("20250915115854_NewRegexOffer")]
+    partial class NewRegexOffer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

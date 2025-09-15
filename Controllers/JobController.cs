@@ -41,17 +41,16 @@ namespace TMS.Controllers
         // GET: Job/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            
+            if (!int.TryParse(id, out var jobId) || jobId <= 0)
+                return BadRequest("Invalid JobId.");
 
             var job = await _context.Job
-                .FirstOrDefaultAsync(m => m.Id == int.Parse(id));
+                .AsNoTracking() 
+                .FirstOrDefaultAsync(m => m.Id == jobId);
+
             if (job == null)
-            {
                 return NotFound();
-            }
 
             return View(job);
         }
@@ -89,7 +88,7 @@ namespace TMS.Controllers
 
 
         // GET: Job/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -109,7 +108,7 @@ namespace TMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,loadDate,TrailerType,LoadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,loadDate,TrailerTypes,LoadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
         {
             if (id != job.Id)
             {
@@ -140,7 +139,7 @@ namespace TMS.Controllers
         }
 
         // GET: Job/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -280,15 +279,19 @@ namespace TMS.Controllers
             }
             if (!string.IsNullOrEmpty(destinationLoad)) 
             {  
-                jobs = jobs.Where(j => j.locationOrigin.Contains(destinationLoad.ToLower()));
+             
+                var term = destinationLoad.ToLower();
+                jobs = jobs.Where(j => j.locationOrigin != null && j.locationOrigin.ToLower().Contains(term));
             }
             if (!string.IsNullOrEmpty(destinationUnload)) 
-            {   
-                jobs = jobs.Where(j => j.locationDestination.Contains(destinationUnload.ToLower()));
+            {
+                var term = destinationUnload.ToLower();
+                jobs = jobs.Where(j => j.locationDestination != null && j.locationDestination.ToLower().Contains(term));
             }
             if (!string.IsNullOrEmpty(companyName)) 
-            {   
-                jobs = jobs.Where(j => j.companyName.Contains(companyName.ToLower()));
+            {
+                var term = companyName.ToLower();
+                jobs = jobs.Where(j => j.companyName != null && j.companyName.ToLower().Contains(term));
             }
             if (weight.HasValue) 
             {     
