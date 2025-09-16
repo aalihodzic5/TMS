@@ -1,31 +1,123 @@
 ﻿@{
-	ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
-<h1 style="text-align: center">TMS</h1>
-<div style="height: 35em; overflow: hidden">
-	<img src="https://static.vecteezy.com/system/resources/thumbnails/027/101/183/small/a-truck-with-a-trailer-is-driving-on-the-motorway-at-night-with-an-orange-sunny-sunset-in-the-free-photo.jpg" style="width: 100%">
-</div>
-<h3 style="margin-top: 3%">
-	Transportation management system application 
-</h3>
-<div style="margin-top: 2%; color: darkorange; font-size: 1.5em">
-	<b>
-		Ova web-aplikacija namijenjena je za rad sa studentima i predmetima
-		fakulteta.
-		<br>
-		Sastoji se od korisničkih interfejsa koji omogućavaju vršenje operacija
-		dodavanja, editovanja i brisanja.
-		<br>
-		Trenutno je izvršen razvoj samo za predmete, kojima je moguće pristupiti
-		pomoću stavke menija na vrhu stranice.
-	</b>
 
-	<br>
-	Više informacija o ASP.NET možete naći na <a href="https://c2.etf.unsa.ba/course/view.php?id=111"> sljedećem linku.</a>
-	<br>
-	<br>
-	<h5>Više informacija o našem fakultetu:</h5>
-	
+<div class="container py-4">
 
+    <!-- Hero -->
+    <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="position-relative">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/027/101/183/small/a-truck-with-a-trailer-is-driving-on-the-motorway-at-night-with-an-orange-sunny-sunset-in-the-free-photo.jpg"
+                 class="w-100" style="max-height: 420px; object-fit: cover;" alt="TMS hero image" />
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,.35);"></div>
 
+            <div class="position-absolute top-50 start-50 translate-middle text-white text-center p-3">
+                <h1 class="display-5 fw-bold mb-2">Transport Management System</h1>
+                <p class="lead mb-3">
+                    Plan loads, assign drivers, manage trucks & trailers, send offers, and track everything in one place.
+                </p>
+                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                    <a asp-controller="Job" asp-action="Filter" class="btn btn-primary btn-lg">Find Jobs</a>
+                    <a asp-controller="Job" asp-action="Create" class="btn btn-outline-light btn-lg">Set Job</a>
+                    <a asp-controller="Job" asp-action="Map" class="btn btn-outline-light btn-lg">View Map</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- What you can do -->
+        <div class="p-4">
+            <h2 class="h4 mb-3">What you can do</h2>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 h-100">
+                        <div class="fs-4 mb-2">🚚 Fleet</div>
+                        <p class="mb-0">
+                            Create and manage <strong>Trucks</strong> and <strong>Trailers</strong>. Track registration and next service dates.
+                            Each asset is linked to its owner account.
+                        </p>
+                        <div class="mt-2 d-flex gap-2 flex-wrap">
+                            <a asp-controller="Truck" asp-action="Index" class="btn btn-sm btn-outline-secondary">Trucks</a>
+                            <a asp-controller="Trailer" asp-action="Index" class="btn btn-sm btn-outline-secondary">Trailers</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 h-100">
+                        <div class="fs-4 mb-2">👷 Drivers</div>
+                        <p class="mb-0">
+                            Add drivers and assign them to jobs. Filter by availability, vehicle type, and more.
+                        </p>
+                        <div class="mt-2">
+                            <a asp-controller="Driver" asp-action="Index" class="btn btn-sm btn-outline-secondary">Drivers</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 h-100">
+                        <div class="fs-4 mb-2">📦 Jobs & Offers</div>
+                        <p class="mb-0">
+                            Search loads, send price offers, and assign jobs to drivers. See distances, trailer/load types, and pricing.
+                        </p>
+                        <div class="mt-2 d-flex gap-2 flex-wrap">
+                            <a asp-controller="Job" asp-action="Filter" class="btn btn-sm btn-outline-secondary">Find Job</a>
+                            <a asp-controller="Offer" asp-action="Index" class="btn btn-sm btn-outline-secondary">Offers</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 h-100">
+                        <div class="fs-4 mb-2">🗺️ Maps</div>
+                        <p class="mb-0">
+                            Visualize routes and destinations. Highlight and compare routes directly from search results.
+                        </p>
+                        <div class="mt-2">
+                            <a asp-controller="Job" asp-action="Map" class="btn btn-sm btn-outline-secondary">Open Map</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 h-100">
+                        <div class="fs-4 mb-2">💾 Saved Jobs & Reports</div>
+                        <p class="mb-0">
+                            Keep a list of saved jobs and export analytics for price, distance, and utilization.
+                        </p>
+                        <div class="mt-2 d-flex gap-2 flex-wrap">
+                            <a asp-controller="SavedJob" asp-action="Index" class="btn btn-sm btn-outline-secondary">Saved Jobs</a>
+                            <a asp-controller="Reports" asp-action="Index" class="btn btn-sm btn-outline-secondary">Reports</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 h-100">
+                        <div class="fs-4 mb-2">🔐 Roles & Access</div>
+                        <p class="mb-0">
+                            Role-based access for <strong>Dispatcher</strong> and <strong>Administrator</strong> ensures secure, organized workflows.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick links -->
+            <div class="mt-4">
+                <h2 class="h5 mb-3">Quick links</h2>
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-controller="Job" asp-action="Filter" class="btn btn-outline-primary">Find Job</a>
+                    <a asp-controller="Job" asp-action="Create" class="btn btn-outline-primary">Set Job</a>
+                    <a asp-controller="Truck" asp-action="Index" class="btn btn-outline-primary">Trucks</a>
+                    <a asp-controller="Trailer" asp-action="Index" class="btn btn-outline-primary">Trailers</a>
+                    <a asp-controller="Driver" asp-action="Index" class="btn btn-outline-primary">Drivers</a>
+                    <a asp-controller="Job" asp-action="Map" class="btn btn-outline-primary">Maps</a>
+                    <a asp-controller="Offer" asp-action="Index" class="btn btn-outline-primary">Offers</a>
+                    <a asp-controller="SavedJob" asp-action="Index" class="btn btn-outline-primary">Saved Jobs</a>
+                    <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-primary">Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
