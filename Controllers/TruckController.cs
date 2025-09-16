@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +11,6 @@ using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
-using System;
-using Microsoft.AspNetCore.Authorization;
 
 namespace TMS.Controllers
 {
@@ -17,16 +18,22 @@ namespace TMS.Controllers
     public class TruckController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public TruckController(ApplicationDbContext context)
+        public TruckController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Truck
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Truck.ToListAsync());
+            var userId = _userManager.GetUserId(User);
+            var trucks = await _context.Truck
+                .Where(t => t.UserID == userId)
+                .ToListAsync();
+            return View(trucks);
         }
 
         // GET: Truck/Details/5
@@ -64,6 +71,7 @@ namespace TMS.Controllers
         {
             if (ModelState.IsValid)
             {
+                truck.UserID = _userManager.GetUserId(User);
                 _context.Add(truck);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,28 +107,36 @@ namespace TMS.Controllers
                 return NotFound();
             }
 
+            var userId = _userManager.GetUserId(User);
+
+            // Provjeri da li ovaj kamion pripada ulogovanom useru
+            var existing = await _context.Truck.AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserID == userId);
+
+            if (existing == null)
+            {
+                return Forbid(); // ili NotFound()
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    truck.UserID = userId; // ponovo postavi vlasnika
                     _context.Update(truck);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!TruckExists(truck.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(truck);
         }
+
 
         // GET: Truck/Delete/5
         public async Task<IActionResult> Delete(int id)

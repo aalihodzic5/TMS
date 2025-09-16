@@ -11,7 +11,7 @@ namespace TMS.Models
 
         [ForeignKey("Truck")]
         public int TruckId { get; set; }
-        public Truck Truck { get; set; } = default!;
+        public Truck? Truck { get; set; } = default!;
 
 
         public string brand { get; set; } = default!;
