@@ -1,0 +1,135 @@
+﻿@model List<TMS.Models.Job>
+@{
+    ViewData["Title"] = "Comparator";
+    var valid = Model != null && Model.Count >= 2;
+}
+
+@if (!valid)
+{
+    <div class="alert alert-warning">Za poređenje su potrebna 2 posla.</div>
+    <a asp-controller="Job" asp-action="Filter" class="btn btn-primary mt-2">Nazad na listu</a>
+}
+else
+{
+    var a = Model[0];
+    var b = Model[1];
+
+    bool Diff<T>(T x, T y) => !(Equals(x, y));
+    string RowCls(bool diff) => diff ? "diff" : "";
+
+    <style>
+        .compare-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .compare-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 12px;
+            background: #f9fafb;
+        }
+
+            .compare-card h5 {
+                margin: 0 0 8px 0;
+            }
+
+        .table-compare th {
+            background: #f3f4f6;
+        }
+
+        .table-compare td, .table-compare th {
+            vertical-align: middle;
+        }
+
+        tr.diff td:nth-child(2), tr.diff td:nth-child(3) {
+            font-weight: 600;
+            background: #fffbea;
+        }
+    </style>
+
+    <div class="compare-header">
+        <div class="compare-card">
+            <h5>Posao @a.Id</h5>
+            <div><strong>Origin:</strong> @a.locationOrigin</div>
+            <div><strong>Destination:</strong> @a.locationDestination</div>
+            <div><strong>Load date:</strong> @a.loadDate.ToShortDateString()</div>
+            <div><strong>Price:</strong> @a.price.ToString("C")</div>
+        </div>
+        <div class="compare-card">
+            <h5>Posao @b.Id</h5>
+            <div><strong>Origin:</strong> @b.locationOrigin</div>
+            <div><strong>Destination:</strong> @b.locationDestination</div>
+            <div><strong>Load date:</strong> @b.loadDate.ToShortDateString()</div>
+            <div><strong>Price:</strong> @b.price.ToString("C")</div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-compare">
+        <thead>
+            <tr>
+                <th style="width:22%">Atribut</th>
+                <th style="width:39%">Posao @a.Id</th>
+                <th style="width:39%">Posao @b.Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="@RowCls(Diff(a.postingDate, b.postingDate))">
+                <td>Published</td>
+                <td>@a.postingDate</td>
+                <td>@b.postingDate</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.locationOrigin, b.locationOrigin))">
+                <td>Origin</td>
+                <td>@a.locationOrigin</td>
+                <td>@b.locationOrigin</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.locationDestination, b.locationDestination))">
+                <td>Destination</td>
+                <td>@a.locationDestination</td>
+                <td>@b.locationDestination</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.loadDate.Date, b.loadDate.Date))">
+                <td>Load date</td>
+                <td>@a.loadDate.ToShortDateString()</td>
+                <td>@b.loadDate.ToShortDateString()</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.TrailerTypes, b.TrailerTypes))">
+                <td>Trailer type</td>
+                <td>@a.TrailerTypes</td>
+                <td>@b.TrailerTypes</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.LoadType, b.LoadType))">
+                <td>Load type</td>
+                <td>@a.LoadType</td>
+                <td>@b.LoadType</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.distanceOrigin, b.distanceOrigin))">
+                <td>Distance (Load)</td>
+                <td>@a.distanceOrigin km</td>
+                <td>@b.distanceOrigin km</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.distanceDestination, b.distanceDestination))">
+                <td>Distance (Unload)</td>
+                <td>@a.distanceDestination km</td>
+                <td>@b.distanceDestination km</td>
+            </tr>
+            <tr class="@RowCls(Diff(a.distanceOrigin + a.distanceDestination, b.distanceOrigin + b.distanceDestination))">
+                <td><strong>Total distance</strong></td>
+                <td><strong>@(a.distanceOrigin + a.distanceDestination) km</strong></td>
+                <td><strong>@(b.distanceOrigin + b.distanceDestination) km</strong></td>
+            </tr>
+            <tr class="@RowCls(Diff(a.price, b.price))">
+                <td><strong>Price</strong></td>
+                <td><strong>@a.price.ToString("C")</strong></td>
+                <td><strong>@b.price.ToString("C")</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex gap-2 mt-3">
+        <a asp-controller="SavedJob" asp-action="Index" class="btn btn-primary">Back to saved jobs</a>
+    </div>
+}

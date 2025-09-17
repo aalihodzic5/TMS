@@ -20,15 +20,16 @@ else
                 <th>Load date</th>
                 <th>Trailer</th>
                 <th>Load type</th>
-                <th class="text-end">Price</th>
+                <th>Price</th>
+                <th>Compare</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                // item.Job je uključen u kontroleru preko Include(s => s.Job)
-                <tr>
+                
+                <tr data-jobid="@item.JobId">
                     <td>@item.savedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@item.Job?.locationOrigin</td>
                     <td>@item.Job?.locationDestination</td>
@@ -36,6 +37,16 @@ else
                     <td>@item.Job?.TrailerTypes</td>
                     <td>@item.Job?.LoadType</td>
                     <td class="text-end">@item.Job?.price.ToString("C")</td>
+
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary btn-compare"
+                                onclick="addToCompare(@item.JobId)"
+                                title="Add to Comparator">
+                            Compare
+                        </button>
+                    </td>
+
                     <td class="text-end">
                         <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="d-inline">
                             @Html.AntiForgeryToken()
@@ -51,3 +62,59 @@ else
         </tbody>
     </table>
 }
+
+@section Scripts {
+    <script>
+        (function () {
+          const KEY = "compareSelection";
+
+          function getSel() {
+            try { return JSON.parse(localStorage.getItem(KEY)) ?? []; }
+            catch { return []; }
+          }
+          function setSel(arr) { localStorage.setItem(KEY, JSON.stringify(arr)); }
+
+          window.addToCompare = function (jobId) {
+            let sel = getSel();
+
+            // toggle
+            if (sel.includes(jobId)) {
+              sel = sel.filter(x => x !== jobId);
+            } else {
+              sel.push(jobId);
+              if (sel.length > 2) sel = sel.slice(sel.length - 2); // zadrži zadnja 2
+            }
+
+            setSel(sel);
+            updateCompareButtons();
+
+            if (sel.length === 2) {
+              const qs = encodeURIComponent(sel.join(","));
+              // idi na komparator (controller treba da prima ?ids=12,34)
+              window.location.href = `/Comparator?ids=${qs}`;
+            }
+          };
+
+          function updateCompareButtons() {
+            const sel = new Set(getSel());
+            document.querySelectorAll("tr[data-jobid]").forEach(row => {
+              const id = parseInt(row.getAttribute("data-jobid"));
+              const btn = row.querySelector(".btn-compare");
+              if (!btn) return;
+              if (sel.has(id)) {
+                btn.classList.remove("btn-outline-primary");
+                btn.classList.add("btn-primary");
+                btn.textContent = "In compare";
+              } else {
+                btn.classList.add("btn-outline-primary");
+                btn.classList.remove("btn-primary");
+                btn.textContent = "Compare";
+              }
+            });
+          }
+
+          document.addEventListener("DOMContentLoaded", updateCompareButtons);
+        })();
+    </script>
+}
+
