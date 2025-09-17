@@ -1,6 +1,7 @@
 ﻿@model List<TMS.Models.Job>
 @{
     ViewData["Title"] = "Filter";
+    var savedIds = (ViewBag.SavedIds as HashSet<int>) ?? new HashSet<int>();
 }
 
 @using System.Text.Json
@@ -164,9 +165,26 @@
                 <td>@job.LoadType</td>
                 <td>@(job.distanceOrigin + job.distanceDestination) km</td>
                 <td>@job.price.ToString("C")</td>
-                <td>
-                    <input type="checkbox" name="assign_@job.Id" />
+                <!-- SAVE / UNSAVE -->
+                <td class="text-center">
+                    @if (savedIds.Contains(job.Id))
+                    {
+                        <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jobId" value="@job.Id" />
+                            <button type="submit" class="btn btn-warning btn-sm" title="Remove from saved">★ Saved</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-controller="SavedJob" asp-action="Save" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jobId" value="@job.Id" />
+                            <button type="submit" class="btn btn-outline-warning btn-sm" title="Save this job">☆ Save</button>
+                        </form>
+                    }
                 </td>
+
                 <td>
                     <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center">
                         @Html.AntiForgeryToken()

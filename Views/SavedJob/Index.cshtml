@@ -1,0 +1,53 @@
+﻿@model IEnumerable<TMS.Models.SavedJob>
+@{
+    ViewData["Title"] = "My Saved Jobs";
+}
+
+<h2 class="mb-3">My Saved Jobs</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Još nema sačuvanih poslova.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Saved at</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Load date</th>
+                <th>Trailer</th>
+                <th>Load type</th>
+                <th class="text-end">Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                // item.Job je uključen u kontroleru preko Include(s => s.Job)
+                <tr>
+                    <td>@item.savedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@item.Job?.locationOrigin</td>
+                    <td>@item.Job?.locationDestination</td>
+                    <td>@item.Job?.loadDate.ToShortDateString()</td>
+                    <td>@item.Job?.TrailerTypes</td>
+                    <td>@item.Job?.LoadType</td>
+                    <td class="text-end">@item.Job?.price.ToString("C")</td>
+                    <td class="text-end">
+                        <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jobId" value="@item.JobId" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                        </form>
+                        <a asp-controller="Job" asp-action="Details" asp-route-id="@item.JobId" class="btn btn-sm btn-outline-secondary ms-1">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

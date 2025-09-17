@@ -42,12 +42,14 @@ namespace TMS.Controllers
             var drivers = await _context.Driver
                 .Include(d => d.Truck)
                 .Where(d =>
-                    (d.Truck != null && d.Truck.UserID == userId) ||
-                    (d.Truck == null && d.UserID == userId))
+                    d.UserID == userId ||
+                    (d.TruckId != null && _context.Truck.Any(t => t.Id == d.TruckId && t.UserID == userId))
+                )
                 .ToListAsync();
 
             return View(drivers);
         }
+
 
 
         // GET: Driver/Details/5
