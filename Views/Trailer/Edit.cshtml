@@ -1,5 +1,5 @@
 ﻿@model TMS.Models.Trailer
-
+@using TMS.Models.Enums
 @{
     ViewData["Title"] = "Edit";
 }
@@ -19,9 +19,12 @@
                 <span asp-validation-for="brand" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="trailerType" class="control-label"></label>
-                <select asp-for="trailerType" class="form-control"></select>
-                <span asp-validation-for="trailerType" class="text-danger"></span>
+
+                <select asp-for="trailerType"
+                        class="form-control"
+                        asp-items="Html.GetEnumSelectList<TrailerTypes>()">
+                </select>
+
             </div>
             <div class="form-group">
                 <label asp-for="licensePlate" class="control-label"></label>
@@ -43,11 +46,17 @@
                 <input asp-for="specification" class="form-control" />
                 <span asp-validation-for="specification" class="text-danger"></span>
             </div>
+           
             <div class="form-group">
-                <label asp-for="TruckId" class="control-label"></label>
-                <input asp-for="TruckId" class="form-control" />
+                <label asp-for="TruckId" class="control-label">Truck</label>
+                <select asp-for="TruckId"
+                        class="form-control"
+                        asp-items="@(ViewBag.TruckList as List<SelectListItem>)">
+                    <option value="">-- Select truck --</option>
+                </select>
                 <span asp-validation-for="TruckId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

@@ -61,24 +61,43 @@
                 @Html.DisplayFor(modelItem => item.offerState)
             </td>
             <td>
-                    @if (User.IsInRole("Administrator") || User.IsInRole("Broker"))
-                    {
-                        <a asp-controller="Offer" asp-action="Accept" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
-                            Accept
-                        </a> 
-                        @:|
-                    }
+    @if (User.IsInRole("Administrator") || User.IsInRole("Broker"))
+    {
+        
+        <form asp-controller="Offer"
+              asp-action="Accept"
+              asp-route-id="@item.Id"
+              method="post"
+              class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+        </form>
+        @:|
 
-                    @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
-                    {
-                        <a asp-controller="Offer" asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
-                            Assign
-                        </a>
-                        @:|
-                    }
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+        
+        <form asp-controller="Offer"
+              asp-action="Reject"
+              asp-route-id="@item.Id"
+              method="post"
+              class="d-inline"
+              onsubmit="return confirm('Jeste li sigurni da želite odbiti ponudu @item.Id?');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+        </form>
+        @:|
+    }
+
+    @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
+    {
+        <a asp-controller="Offer" asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+            Assign
+        </a>
+        @:|
+    }
+
+    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+</td>
         </tr>
 }
     </tbody>

@@ -65,7 +65,7 @@ namespace TMS.Controllers
             return View(driver);
         }
 
-        //GET: Driver/Create
+        
         // GET: Driver/Create
         public async Task<IActionResult> Create()
         {
@@ -194,6 +194,7 @@ namespace TMS.Controllers
                 .ToListAsync();
 
             var trucks = await _context.Truck
+                .Where(t => t.UserID == selectedUserId)
                 .Select(t => new SelectListItem
                 {
                     Value = t.Id.ToString(),

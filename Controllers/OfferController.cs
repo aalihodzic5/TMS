@@ -41,6 +41,22 @@ namespace TMS.Controllers
             return View(offer);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Broker")]
+        public async Task<IActionResult> Reject(int? id)
+        {
+            if (id == null || id <= 0)
+                return BadRequest("OfferId can not be null");
+
+            var model = await _context.Offer.FindAsync(id);
+            if (model == null) return NotFound();
+
+            model.offerState = OfferState.REJECTED;
+            _context.Update(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
         // POST: /Offer/Accept
         [HttpPost]
         [ValidateAntiForgeryToken]
