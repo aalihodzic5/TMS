@@ -33,6 +33,8 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 
@@ -77,5 +79,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

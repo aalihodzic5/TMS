@@ -20,6 +20,7 @@ namespace TMS.Models
         [EnumDataType(typeof(NotificationStatus))]
         public NotificationStatus status { get; set; }
 
+        public string? Link { get; set; }
 
         public Notification() {}
     }

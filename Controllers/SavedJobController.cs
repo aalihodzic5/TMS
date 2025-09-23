@@ -93,7 +93,7 @@ namespace TMS.Controllers
             return !string.IsNullOrWhiteSpace(back) ? Redirect(back) : RedirectToAction(nameof(Index));
         }
 
-        // GET: /SavedJob/Details/5 (opcionalno)
+        // GET: /SavedJob/Details/5
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {

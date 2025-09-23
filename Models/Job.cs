@@ -10,7 +10,13 @@ namespace TMS.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Driver")]
+        //[ForeignKey("User")]
+        [Required]
+        public string UserId { get; set; } = default!; // ID korisnika koji je kreirao posao
+        public User User { get; set; } = default!;
+
+
+        //[ForeignKey("Driver")]
         public int? DriverId { get; set; }
         public Driver? Driver { get; set; } = default!;
 

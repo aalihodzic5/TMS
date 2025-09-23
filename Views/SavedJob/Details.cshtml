@@ -28,9 +28,89 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.savedDate)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.loadDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.loadDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.TrailerTypes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.TrailerTypes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.LoadType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.LoadType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.distanceOrigin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.distanceOrigin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.distanceDestination)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.distanceDestination)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.locationOrigin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.locationOrigin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.locationDestination)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.locationDestination)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.companyName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.companyName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.loadWeight)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.loadWeight)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.loadLength)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.loadLength)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.comments)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.comments)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Job.postingDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Job.postingDate)
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a 
+       href="@Context.Request.Query["returnUrl"].ToString()">
+        Back to List
+    </a>
 </div>

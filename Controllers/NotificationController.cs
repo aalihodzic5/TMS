@@ -7,17 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace TMS.Controllers
 {
     public class NotificationController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<NotificationHub> _hub;
 
-        public NotificationController(ApplicationDbContext context)
+
+        public NotificationController(ApplicationDbContext context, IHubContext<NotificationHub> hub)
         {
             _context = context;
+            _hub = hub;
         }
+
 
         // GET: Notification
         public async Task<IActionResult> Index()
@@ -54,15 +59,17 @@ namespace TMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Message,NotificationDate,status")] Notification notification)
+        public async Task<IActionResult> Create([Bind("UserId,Message,NotificationDate,status,Link")] Notification notification)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(notification);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(notification);
+            if (!ModelState.IsValid) return View(notification);
+
+            _context.Add(notification);
+            await _context.SaveChangesAsync();
+ 
+            await _hub.Clients.User(notification.UserId)
+                      .SendAsync("ReceiveNotification", notification.Message, notification.Link);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Notification/Edit/5

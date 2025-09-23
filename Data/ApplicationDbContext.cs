@@ -70,7 +70,7 @@ namespace TMS.Data
                 .HasOne(ou => ou.Offer)
                 .WithMany()
                 .HasForeignKey(ou => ou.OfferId)
-                .OnDelete(DeleteBehavior.Restrict); // ili NoAction
+                .OnDelete(DeleteBehavior.Restrict); 
 
             // Payment -> Offer
             modelBuilder.Entity<Payment>()
@@ -84,21 +84,33 @@ namespace TMS.Data
                 .HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // ovo je OK
+                .OnDelete(DeleteBehavior.Cascade); 
 
             // Subscription -> Payment
             modelBuilder.Entity<Subscription>()
                 .HasOne(s => s.Payment)
                 .WithMany()
                 .HasForeignKey(s => s.PaymentId)
-                .OnDelete(DeleteBehavior.Restrict); // KLJUČNO
+                .OnDelete(DeleteBehavior.Restrict); 
 
             // Subscription -> User
             modelBuilder.Entity<Subscription>()
                 .HasOne(s => s.User)
                 .WithMany()
                 .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // ovo je OK
+                .OnDelete(DeleteBehavior.Cascade); 
+
+       
+
+            // Job → User (bez cascade delete da se izbjegne problem multiple cascade paths)
+            modelBuilder.Entity<Job>()
+                .HasOne(j => j.User)
+                .WithMany() // ili WithMany(u => u.Jobs) ako User ima ICollection<Job>
+                .HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+          
+
         }
     }
 }

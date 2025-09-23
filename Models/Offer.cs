@@ -16,6 +16,7 @@ namespace TMS.Models
 
         [ForeignKey("User")]
         public string UserId { get; set; } = default!;
+        public User User { get; set; } = default!;
 
         public Job Job { get; set; } = default!;
         public String report { get; set; } = default!;
@@ -27,7 +28,6 @@ namespace TMS.Models
 
         [EnumDataType(typeof(OfferState))]
         public OfferState offerState { get; set; }
-
 
         public Offer() { }
     }

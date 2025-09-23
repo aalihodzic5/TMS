@@ -3,250 +3,56 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
+using Microsoft.AspNetCore.SignalR;
 
 namespace TMS.Controllers
 {
     public class OfferController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<NotificationHub> _notificationHub;
 
-        public OfferController(ApplicationDbContext context)
+        public OfferController(ApplicationDbContext context, IHubContext<NotificationHub> notificationHub)
         {
             _context = context;
+            _notificationHub = notificationHub;
         }
 
-
-
-
-        // GET: /Offer/Accept/5
+        // GET: Offer
         [HttpGet]
-        [Authorize(Roles = "Administrator, Broker")]
-        public async Task<IActionResult> Accept(int? id)
-        {
-
-            if (id == null || id <= 0)
-                return BadRequest("OfferId can not be null");
-
-            var offer = await _context.Offer.FindAsync(id);
-            if (offer == null) return NotFound();
-
-            ViewBag.OfferStates = new SelectList(Enum.GetValues(typeof(OfferState)));
-            return View(offer);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Administrator, Broker")]
-        public async Task<IActionResult> Reject(int? id)
-        {
-            if (id == null || id <= 0)
-                return BadRequest("OfferId can not be null");
-
-            var model = await _context.Offer.FindAsync(id);
-            if (model == null) return NotFound();
-
-            model.offerState = OfferState.REJECTED;
-            _context.Update(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        // POST: /Offer/Accept
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator, Broker")]
-        public async Task<IActionResult> Accept(int id)
-        {
-            var model = await _context.Offer.FindAsync(id);
-            if (model == null) return NotFound();
-
-            model.offerState = OfferState.ACCEPTED;
-
-            _context.Update(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-
-
-
-        // GET: Offer/Index
         public async Task<IActionResult> Index()
         {
-            var offers = await _context.Offer
-                .Include(o => o.Job)   // učitaj povezani Job
-                .ToListAsync();
-
+            var offers = await _context.Offer.Include(o => o.User).Include(o => o.Job).ToListAsync();
             return View(offers);
         }
 
 
-        // GET: Offer/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var offer = await _context.Offer
-                .FirstOrDefaultAsync(m => m.Id == int.Parse(id));
-            if (offer == null)
-            {
-                return NotFound();
-            }
-
-            return View(offer);
-        }
-
-        // GET: Offer/Create
-        /*public IActionResult Create()
-        {
-            return View();
-        }
-        */
-        // POST: Offer/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,JobId,UserId,report,offerDate,price,offerState")] Offer offer)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(offer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(offer);
-        }
-
-        // GET: Offer/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var offer = await _context.Offer.FindAsync(id);
-            if (offer == null)
-            {
-                return NotFound();
-            }
-            return View(offer);
-        }
-
-        // POST: Offer/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,JobId,UserId,report,offerDate,price,offerState")] Offer offer)
-        {
-            if (int.Parse(id) != offer.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(offer);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OfferExists(offer.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(offer);
-        }
-
-        // GET: Offer/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var offer = await _context.Offer
-                .FirstOrDefaultAsync(m => m.Id == int.Parse(id));
-            if (offer == null)
-            {
-                return NotFound();
-            }
-
-            return View(offer);
-        }
-
-        // POST: Offer/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var offer = await _context.Offer.FindAsync(int.Parse(id));
-            if (offer != null)
-            {
-                _context.Offer.Remove(offer);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool OfferExists(int id)
-        {
-            return _context.Offer.Any(e => e.Id == id);
-        }
-
-
-        //POST : SendOffer
-
+        // POST : SendOffer
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator, Dispatcher")]
-        public async Task<IActionResult> SendOffer(int jobId, decimal offerPrice) 
+        public async Task<IActionResult> SendOffer(int jobId, decimal offerPrice)
         {
-            var job = await _context.Job.FindAsync(jobId);
+            var job = await _context.Job.Include(j => j.User).FirstOrDefaultAsync(j => j.Id == jobId);
+            if (job == null) return NotFound();
 
-            if (job == null)
-            {
-               return NotFound();
-            }
-
-            string userClaim = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            if (userClaim == null)
-            {
-                return Unauthorized(); // Ako nije prijavljen, vrati Unauthorized
-            }
-            string userId = userClaim;
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
 
             int userOfferCount = await _context.Offer.CountAsync(o => o.JobId == jobId && o.UserId == userId);
-
             if (userOfferCount >= 2)
             {
                 TempData["ErrorMessage"] = "Max number of offers is 2";
                 return RedirectToAction("Filter", "Job");
             }
 
-            if(offerPrice == 0)offerPrice = job.price; // Ako je cijena 0, postavi na cijenu posla
+            if (offerPrice == 0) offerPrice = job.price;
 
             var offer = new Offer
             {
@@ -255,21 +61,95 @@ namespace TMS.Controllers
                 price = offerPrice,
                 offerDate = DateTime.Now,
                 offerState = OfferState.PENDING,
-                report = "Offer sent by " + User.Identity!.Name + " for job " + jobId,
-
+                report = "Offer sent by " + User.Identity!.Name + " for job " + jobId
             };
+
+            Console.WriteLine($"JobId: {jobId}, UserId: {userId}, OfferPrice: {offerPrice}, brokerId: {job.UserId}");
 
             _context.Add(offer);
             await _context.SaveChangesAsync();
 
+            // --- NOTIFIKACIJA ---
+            var brokerId = job.UserId; // pretpostavljamo da broker drži posao
+            var notification = new Notification
+            {
+                UserId = brokerId,
+                Message = $"New offer sent by {User.Identity!.Name} for job {jobId}.",
+                NotificationDate = DateTime.Now,
+                status = NotificationStatus.UNREAD,
+                Link = "/Job/Details/" + jobId
+            };
+            _context.Notification.Add(notification);
+            await _context.SaveChangesAsync();
+
+            // Pošalji putem SignalR
+            await _notificationHub.Clients.User(brokerId)
+                .SendAsync("ReceiveNotification", notification.Message, "/Job/Details/" + jobId);
+
             TempData["SuccessMessage"] = "Offer successfully sent for job ID: " + jobId;
-
             return RedirectToAction("Index", "Offer");
-
-
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Broker")]
+        public async Task<IActionResult> Accept(int? id)
+        {
+            if (id == null || id <= 0) return BadRequest();
 
+            var offer = await _context.Offer.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+            if (offer == null) return NotFound();
 
+            offer.offerState = OfferState.ACCEPTED;
+            _context.Update(offer);
+            await _context.SaveChangesAsync();
+
+            // NOTIFIKACIJA za korisnika koji je poslao ponudu
+            var notification = new Notification
+            {
+                UserId = offer.UserId,
+                Message = $"Your offer for job {offer.JobId} has been ACCEPTED by {User.Identity!.Name}.",
+                NotificationDate = DateTime.Now,
+                status = NotificationStatus.UNREAD,
+                Link = "/Offer/Details/" + offer.Id
+            };
+            _context.Notification.Add(notification);
+            await _context.SaveChangesAsync();
+
+            await _notificationHub.Clients.User(offer.UserId)
+                .SendAsync("ReceiveNotification", notification.Message, "/Offer/Details/" + offer.Id);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Broker")]
+        public async Task<IActionResult> Reject(int? id)
+        {
+            if (id == null || id <= 0) return BadRequest();
+
+            var offer = await _context.Offer.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+            if (offer == null) return NotFound();
+
+            offer.offerState = OfferState.REJECTED;
+            _context.Update(offer);
+            await _context.SaveChangesAsync();
+
+            // NOTIFIKACIJA za korisnika koji je poslao ponudu
+            var notification = new Notification
+            {
+                UserId = offer.UserId,
+                Message = $"Your offer for job {offer.JobId} has been REJECTED by {User.Identity!.Name}.",
+                NotificationDate = DateTime.Now,
+                status = NotificationStatus.UNREAD,
+                Link = "/Offer/Details/" + offer.Id
+            };
+            _context.Notification.Add(notification);
+            await _context.SaveChangesAsync();
+
+            await _notificationHub.Clients.User(offer.UserId)
+                .SendAsync("ReceiveNotification", notification.Message, "/Offer/Details/" + offer.Id);
+
+            return RedirectToAction("Index");
+        }
     }
 }

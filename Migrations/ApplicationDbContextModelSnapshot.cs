@@ -238,6 +238,10 @@ namespace TMS.Migrations
                     b.Property<int>("TrailerTypes")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -280,6 +284,8 @@ namespace TMS.Migrations
 
                     b.HasIndex("DriverId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Job", (string)null);
                 });
 
@@ -290,6 +296,9 @@ namespace TMS.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Link")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -325,7 +334,7 @@ namespace TMS.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("offerDate")
                         .HasColumnType("datetime2");
@@ -344,6 +353,8 @@ namespace TMS.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Offer", (string)null);
                 });
@@ -697,7 +708,15 @@ namespace TMS.Migrations
                         .WithMany()
                         .HasForeignKey("DriverId");
 
+                    b.HasOne("TMS.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Driver");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TMS.Models.Notification", b =>
@@ -719,7 +738,15 @@ namespace TMS.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TMS.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Job");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TMS.Models.OfferUser", b =>

@@ -51,6 +51,11 @@
             <h4 class="text-primary text-center mb-1">TMS</h4>
             <p class="text-muted text-center mb-3">@User.Identity?.Name</p>
 
+            <!-- Notifikacije -->
+            <ul id="notifications-container" class="list-unstyled mb-3">
+                <!-- Nova notifikacija će se ubacivati ovdje -->
+            </ul>
+
             <div class="section-separator"></div>
 
             <nav class="nav flex-column">
@@ -126,6 +131,14 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+        <script src="~/js/notifications.js"></script>
+    }
+
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -53,9 +53,15 @@ else
                             <input type="hidden" name="jobId" value="@item.JobId" />
                             <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
                         </form>
-                        <a asp-controller="Job" asp-action="Details" asp-route-id="@item.JobId" class="btn btn-sm btn-outline-secondary ms-1">
+                       
+                        <a asp-controller="SavedJob"
+                           asp-action="Details"
+                           asp-route-id="@item.Id"
+                           asp-route-returnUrl="@Url.Action("Index", "SavedJob")"
+                           class="btn btn-sm btn-outline-secondary ms-1">
                             View
                         </a>
+
                     </td>
                 </tr>
             }

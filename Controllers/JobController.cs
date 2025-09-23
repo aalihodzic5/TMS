@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 
 
 
@@ -23,11 +24,13 @@ namespace TMS.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
+        private readonly UserManager<User> _userManager;
 
-        public JobController(ApplicationDbContext context, IConfiguration config)
+        public JobController(ApplicationDbContext context, IConfiguration config, UserManager<User> userManager)
         {
             _context = context;
             _config = config;
+            _userManager = userManager;
         }
 
 
@@ -72,17 +75,22 @@ namespace TMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,loadDate,TrailerTypes,LoadType,distanceOrigin,distanceDestination,locationOrigin,locationDestination,companyName,loadWeight,loadLength,price,comments,postingDate")] Job job)
         {
+            ModelState.Remove("UserId");
+            ModelState.Remove("User");
+
             if (ModelState.IsValid)
             {
+                job.UserId = _userManager.GetUserId(User);
+                job.User = await _userManager.GetUserAsync(User);
+
                 _context.Add(job);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // ⬇️ OVO DODAJ
             ViewBag.TrailerTypes = new SelectList(Enum.GetValues(typeof(TrailerTypes)));
             ViewBag.LoadTypes = new SelectList(Enum.GetValues(typeof(LoadType)));
-
+          
             return View(job);
         }
 
