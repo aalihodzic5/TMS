@@ -85,8 +85,15 @@
                 <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Reports</a>
                 <div class="section-separator"></div>
                 <a class="nav-link text-dark" asp-controller="Notifications" asp-action="Index">Notifications</a>
-                <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Account</a>
-                <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <a class="nav-link text-dark"  asp-controller="User" asp-action="IndexAdmin">Account</a>
+                    }
+                    else
+                    {
+                        <a class="nav-link text-dark" asp-controller="User" asp-action="IndexUser">Account</a>
+                    }
+                    <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
                     <button type="submit" class="btn btn-link nav-link text-dark p-0">Log Out</button>
                 </form>
                 }
@@ -134,8 +141,9 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.16/signalr.min.js"></script>
         <script src="~/js/notifications.js"></script>
+
     }
 
 

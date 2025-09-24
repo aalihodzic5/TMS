@@ -1,0 +1,33 @@
+﻿@model TMS.Models.User
+@{
+    ViewData["Title"] = "My account";
+}
+
+<h1>Moj nalog</h1>
+
+<div class="card" style="max-width:400px;">
+    <div class="card-body text-center">
+        @* Slika korisnika ako postoji *@
+        @* <img src="@Model.ProfilePictureUrl"
+               class="img-thumbnail mb-3"
+               style="max-height:150px;" /> *@
+
+        <h4 class="card-title">
+            @if (User.IsInRole("Broker"))
+            {
+                <span class="badge bg-info">Broker</span>
+            }
+            else if (User.IsInRole("Dispatcher"))
+            {
+                <span class="badge bg-warning">Dispatcher</span>
+            }
+        </h4>
+
+        <p><strong>Ime:</strong> @Model.Ime</p>
+        <p><strong>Prezime:</strong> @Model.Prezime</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Broj telefona:</strong> @Model.PhoneNumber</p>
+
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    </div>
+</div>

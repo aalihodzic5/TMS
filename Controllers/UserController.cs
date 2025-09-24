@@ -19,11 +19,18 @@ namespace TMS.Controllers
         }
 
         // GET: /User/Index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexAdmin()
         {
             var users = await _context.Users.ToListAsync();
             return View(users);
         }
+
+        public async Task<IActionResult> IndexUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+
 
         // GET: /User/Details/id
         public async Task<IActionResult> Details(string id)

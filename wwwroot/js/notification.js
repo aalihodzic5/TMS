@@ -10,8 +10,9 @@ connection.on("ReceiveNotification", (message, link) => {
     item.innerHTML = `<a href="${link}">${message}</a>`;
     container.prepend(item);
 
-    // po želji: prikaz u toast popup-u
-    console.log("Nova notifikacija:", message);
+    console.log("Nova notifikacija:", message, link);
 });
 
-connection.start().catch(err => console.error(err));
+connection.start()
+    .then(() => console.log("SignalR connected"))
+    .catch(err => console.error(err));

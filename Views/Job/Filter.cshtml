@@ -186,7 +186,6 @@
                 </td>
 
                 <td>
-
                     @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
                     {
                         <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center">
@@ -196,7 +195,6 @@
                             <button type="submit" class="btn btn-success btn-sm ms-1">✔</button>
                         </form>
                     }
-
                 </td>
                 <td>
                     <form method="post" asp-action="AssignDriver" class="d-flex align-items-center">
