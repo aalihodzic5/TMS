@@ -10,25 +10,33 @@ using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Identity;
 
 namespace TMS.Controllers
 {
     public class OfferController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
         private readonly IHubContext<NotificationHub> _notificationHub;
 
-        public OfferController(ApplicationDbContext context, IHubContext<NotificationHub> notificationHub)
+        public OfferController(ApplicationDbContext context,UserManager<User> userManager,IHubContext<NotificationHub> notificationHub)
         {
             _context = context;
             _notificationHub = notificationHub;
+            _userManager = userManager;
         }
 
         // GET: Offer
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var offers = await _context.Offer.Include(o => o.User).Include(o => o.Job).ToListAsync();
+            var user = await _userManager.GetUserAsync(User);
+
+            var offers = await _context.Offer.
+                        Include(o => o.User).
+                        Include(o => o.Job).
+                        Where(o => o.UserId == user.Id).ToListAsync();
             return View(offers);
         }
 
@@ -83,12 +91,16 @@ namespace TMS.Controllers
             await _context.SaveChangesAsync();
 
             // Pošalji putem SignalR
-            await _notificationHub.Clients.User(brokerId)
+            await _notificationHub.Clients.All
                 .SendAsync("ReceiveNotification", notification.Message, "/Job/Details/" + jobId);
+
+           
 
             TempData["SuccessMessage"] = "Offer successfully sent for job ID: " + jobId;
             return RedirectToAction("Index", "Offer");
         }
+
+        
 
         [HttpPost]
         [Authorize(Roles = "Administrator, Broker")]
@@ -151,5 +163,62 @@ namespace TMS.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+        // GET: Offer/Details/5
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || id <= 0)
+                return BadRequest();
+
+            var offer = await _context.Offer
+                .Include(o => o.User)
+                .Include(o => o.Job)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (offer == null)
+                return NotFound();
+
+            return View(offer);
+        }
+
+        // GET: Offer/Delete/5
+        [HttpGet]
+        [Authorize(Roles = "Administrator, Dispatcher")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || id <= 0)
+                return BadRequest();
+
+            var offer = await _context.Offer
+                .Include(o => o.User)
+                .Include(o => o.Job)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (offer == null)
+                return NotFound();
+
+            return View(offer);
+        }
+
+        // POST: Offer/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Dispatcher")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var offer = await _context.Offer.FindAsync(id);
+            if (offer == null)
+                return NotFound();
+
+            _context.Offer.Remove(offer);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Offer successfully deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 }

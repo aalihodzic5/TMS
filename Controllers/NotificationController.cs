@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Identity;
 
 namespace TMS.Controllers
 {
@@ -15,19 +16,31 @@ namespace TMS.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IHubContext<NotificationHub> _hub;
+        private readonly UserManager<User> _userManager;
 
 
-        public NotificationController(ApplicationDbContext context, IHubContext<NotificationHub> hub)
+        public NotificationController(ApplicationDbContext context, IHubContext<NotificationHub> hub, UserManager<User> userManager)
         {
             _context = context;
             _hub = hub;
+            _userManager = userManager;
         }
 
 
         // GET: Notification
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexAdmin()
         {
             return View(await _context.Notification.ToListAsync());
+        }
+
+        public async Task<IActionResult> IndexUser()
+        {
+            var userId = _userManager.GetUserId(User);  
+            var notifications = await _context.Notification
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.NotificationDate)
+                .ToListAsync();
+            return View(notifications);
         }
 
         // GET: Notification/Details/5
@@ -65,63 +78,17 @@ namespace TMS.Controllers
 
             _context.Add(notification);
             await _context.SaveChangesAsync();
- 
+
+            var senderUserId = _userManager.GetUserId(User);
+
+
             await _hub.Clients.User(notification.UserId)
-                      .SendAsync("ReceiveNotification", notification.Message, notification.Link);
+                      .SendAsync("ReceiveNotification", senderUserId, notification.Message, notification.Link);
 
             return RedirectToAction(nameof(Index));
+
         }
 
-        // GET: Notification/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var notification = await _context.Notification.FindAsync(id);
-            if (notification == null)
-            {
-                return NotFound();
-            }
-            return View(notification);
-        }
-
-        // POST: Notification/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,Message,NotificationDate,status")] Notification notification)
-        {
-            if (int.Parse(id) != notification.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(notification);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NotificationExists(notification.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(notification);
-        }
 
         // GET: Notification/Delete/5
         public async Task<IActionResult> Delete(string id)

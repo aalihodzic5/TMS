@@ -70,7 +70,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // obavezno prije authorization
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 // 5. MVC rute

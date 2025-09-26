@@ -42,6 +42,18 @@
             padding: 1.5rem;
         }
     </style>
+    <!-- Toast za notifikacije -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="LiveToastBody">
+                    <!-- Poruka se postavlja iz JS -->
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </head>
 <body>
     <div class="main-wrapper">
@@ -64,7 +76,7 @@
                 @if (User.IsInRole("Broker") || User.IsInRole("Administrator"))
                 {
                     <a class="nav-link text-dark" asp-controller="Job" asp-action="Index">Set Job</a>
-                    
+
                 }
 
                 @if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
@@ -76,35 +88,36 @@
                     <a class="nav-link text-dark" asp-controller="Trailer" asp-action="Index">Trailers</a>
                     <a class="nav-link text-dark" asp-controller="Driver" asp-action="Index">Drivers</a>
                     <a class="nav-link text-dark" asp-controller="SavedJob" asp-action="Index">Saved Jobs</a>
-                    
+
                 }
 
                 @if (User.IsInRole("Administrator") || User.IsInRole("Broker") || User.IsInRole("Dispatcher"))
                 {
-                <a class="nav-link text-dark" asp-controller="Offer" asp-action="Index">Offer</a>
-                <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Reports</a>
-                <div class="section-separator"></div>
-                <a class="nav-link text-dark" asp-controller="Notifications" asp-action="Index">Notifications</a>
+                    <a class="nav-link text-dark" asp-controller="Offer" asp-action="Index">Offer</a>
+                    <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Reports</a>
+                    <div class="section-separator"></div>
                     @if (User.IsInRole("Administrator"))
                     {
-                        <a class="nav-link text-dark"  asp-controller="User" asp-action="IndexAdmin">Account</a>
+                        <a class="nav-link text-dark" asp-controller="User" asp-action="IndexAdmin">Account</a>
+                        <a class="nav-link text-dark" asp-controller="Notification" asp-action="IndexAdmin">Notifications</a>
                     }
                     else
                     {
                         <a class="nav-link text-dark" asp-controller="User" asp-action="IndexUser">Account</a>
+                        <a class="nav-link text-dark" asp-controller="Notification" asp-action="IndexUser">Notifications</a>
                     }
                     <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-link nav-link text-dark p-0">Log Out</button>
-                </form>
+                        <button type="submit" class="btn btn-link nav-link text-dark p-0">Log Out</button>
+                    </form>
                 }
                 else
                 {
-                <form asp-area="Identity" asp-page="/Account/Login" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-link nav-link text-dark p-0">Login</button>
-                </form>
-                <form asp-area="Identity" asp-page="/Account/Register" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-link nav-link text-dark p-0">Register</button>
-                </form>
+                    <form asp-area="Identity" asp-page="/Account/Login" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link nav-link text-dark p-0">Login</button>
+                    </form>
+                    <form asp-area="Identity" asp-page="/Account/Register" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link nav-link text-dark p-0">Register</button>
+                    </form>
                 }
 
             </nav>
@@ -123,11 +136,11 @@
             <!--
             <div class="text-center mt-4 mb-2 small">
                 <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
-            </div>  
+            </div>
 
             <footer class="border-top footer text-muted mt-4">
                 <div class="container">
-                    &copy; 2025 - TMS 
+                    &copy; 2025 - TMS
                 </div>
             </footer>
             -->
@@ -139,14 +152,16 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.16/signalr.min.js"></script>
-        <script src="~/js/notifications.js"></script>
 
+    <script src="~/lib/microsoft/signalr/signalr.js"></script>
+    <script src="~/js/notification.js"></script>
+    <!-- This script now only handles the toast, but will be integrated into notifications.js -->
+    <!-- Removed the inline SignalR connection and event handler -->
+    @section Scripts {
+       
     }
-
-
     @await RenderSectionAsync("Scripts", required: false)
+
+   
 </body>
 </html>

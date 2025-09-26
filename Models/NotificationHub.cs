@@ -4,9 +4,41 @@
     using System.Threading.Tasks;
     public class NotificationHub:Hub
     {
-        public async Task SendNotification(string userId, string message, string link)
+        public async Task SendNotificationToUser(string recipientUserId, string message, string link)
         {
-            await Clients.User(userId).SendAsync("ReceiveNotification", message, link);
+            var senderUserId = Context.UserIdentifier; 
+
+            await Clients.User(recipientUserId).SendAsync("ReceiveNotification",senderUserId, message, link);
         }
+
+        public override async Task OnConnectedAsync()
+        {
+            var user = Context.User;
+            string userId = user.Identity.Name; // Get the user's ID
+                                                // Store the user's ID for this connection (as before)
+            Connections.Add(Context.ConnectionId, userId);
+
+            await base.OnConnectedAsync();
+        }
+
+        public static class Connections
+        {
+            public static Dictionary<string, string> Users = new Dictionary<string, string>();
+            public static void Add(string connectionId, string userName)
+            {
+                Users[connectionId] = userName;
+            }
+
+            public static string GetUserName(string connectionId)
+            {
+                if (Users.ContainsKey(connectionId))
+                {
+                    return Users[connectionId];
+                }
+                return null;
+            }
+        }
+
+
     }
 }
