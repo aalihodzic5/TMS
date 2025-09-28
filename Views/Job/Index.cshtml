@@ -1,105 +1,129 @@
 ﻿@model IEnumerable<TMS.Models.Job>
 
-
 @{
     ViewData["Title"] = "Available Jobs";
 }
 
-
-@if (User.IsInRole("Broker") || User.IsInRole("Administrator"))
-{
-    <a asp-controller="Job" asp-action="Create" class="btn btn-outline-primary mb-3">
-        Create New
-    </a>
-}
-
-
-@if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
-{
-    <a asp-controller="Job" asp-action="Filter" class="btn btn-outline-primary mb-3">
-        Filter
-    </a>
-}
-
-
-
-<table class="table responsive-card-table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Id)</th>
-            <th>@Html.DisplayNameFor(model => model.loadDate)</th>
-            <th>@Html.DisplayNameFor(model => model.TrailerTypes)</th>
-            <th>@Html.DisplayNameFor(model => model.LoadType)</th>
-            <th>@Html.DisplayNameFor(model => model.distanceOrigin)</th>
-            <th>@Html.DisplayNameFor(model => model.distanceDestination)</th>
-            <th>@Html.DisplayNameFor(model => model.locationOrigin)</th>
-            <th>@Html.DisplayNameFor(model => model.locationDestination)</th>
-            <th>@Html.DisplayNameFor(model => model.companyName)</th>
-            <th>@Html.DisplayNameFor(model => model.loadWeight)</th>
-            <th>@Html.DisplayNameFor(model => model.loadLength)</th>
-            <th>@Html.DisplayNameFor(model => model.price)</th>
-            <th>@Html.DisplayNameFor(model => model.comments)</th>
-            <th>@Html.DisplayNameFor(model => model.postingDate)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Available Jobs</h1>
+    <div class="d-flex gap-2">
+        @if (User.IsInRole("Broker") || User.IsInRole("Administrator"))
         {
+            <a asp-controller="Job" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"></i> Create New
+            </a>
+        }
+        @if (User.IsInRole("Dispatcher") || User.IsInRole("Administrator"))
+        {
+            <a asp-controller="Job" asp-action="Filter" class="btn btn-outline-secondary">
+                <i class="bi bi-filter"></i> Filter
+            </a>
+        }
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table id="jobsTable" class="table table-striped table-hover table-bordered responsive-card-table">
+        <thead class="thead-dark">
             <tr>
-                <td data-label="@Html.DisplayNameFor(model => model.Id)">
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.loadDate)">
-                    @Html.DisplayFor(modelItem => item.loadDate)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.TrailerTypes)">
-                    @Html.DisplayFor(modelItem => item.TrailerTypes)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.LoadType)">
-                    @Html.DisplayFor(modelItem => item.LoadType)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.distanceOrigin)">
-                    @Html.DisplayFor(modelItem => item.distanceOrigin)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.distanceDestination)">
-                    @Html.DisplayFor(modelItem => item.distanceDestination)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.locationOrigin)">
-                    @Html.DisplayFor(modelItem => item.locationOrigin)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.locationDestination)">
-                    @Html.DisplayFor(modelItem => item.locationDestination)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.companyName)">
-                    @Html.DisplayFor(modelItem => item.companyName)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.loadWeight)">
-                    @Html.DisplayFor(modelItem => item.loadWeight)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.loadLength)">
-                    @Html.DisplayFor(modelItem => item.loadLength)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.price)">
-                    @Html.DisplayFor(modelItem => item.price)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.comments)">
-                    @Html.DisplayFor(modelItem => item.comments)
-                </td>
-                <td data-label="@Html.DisplayNameFor(model => model.postingDate)">
-                    @Html.DisplayFor(modelItem => item.postingDate)
-                </td>
+                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                <th>@Html.DisplayNameFor(model => model.loadDate)</th>
+                <th>@Html.DisplayNameFor(model => model.TrailerTypes)</th>
+                <th>@Html.DisplayNameFor(model => model.LoadType)</th>
+                <th>@Html.DisplayNameFor(model => model.distanceOrigin)</th>
+                <th>@Html.DisplayNameFor(model => model.distanceDestination)</th>
+                <th>@Html.DisplayNameFor(model => model.locationOrigin)</th>
+                <th>@Html.DisplayNameFor(model => model.locationDestination)</th>
+                <th>@Html.DisplayNameFor(model => model.companyName)</th>
+                <th>@Html.DisplayNameFor(model => model.loadWeight)</th>
+                <th>@Html.DisplayNameFor(model => model.loadLength)</th>
+                <th>@Html.DisplayNameFor(model => model.price)</th>
+                <th>@Html.DisplayNameFor(model => model.comments)</th>
+                <th>@Html.DisplayNameFor(model => model.postingDate)</th>
                 @if (User.IsInRole("Administrator") || User.IsInRole("Broker"))
                 {
-                    <td data-label="Actions">
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
+                    <th>Actions</th>
                 }
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-job-id="@item.Id" style="cursor: pointer;">
+                    <td data-label="@Html.DisplayNameFor(model => model.Id)">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.loadDate)">
+                        @Html.DisplayFor(modelItem => item.loadDate)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.TrailerTypes)">
+                        @Html.DisplayFor(modelItem => item.TrailerTypes)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.LoadType)">
+                        @Html.DisplayFor(modelItem => item.LoadType)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.distanceOrigin)">
+                        @Html.DisplayFor(modelItem => item.distanceOrigin)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.distanceDestination)">
+                        @Html.DisplayFor(modelItem => item.distanceDestination)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.locationOrigin)">
+                        @Html.DisplayFor(modelItem => item.locationOrigin)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.locationDestination)">
+                        @Html.DisplayFor(modelItem => item.locationDestination)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.companyName)">
+                        @Html.DisplayFor(modelItem => item.companyName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.loadWeight)">
+                        @Html.DisplayFor(modelItem => item.loadWeight)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.loadLength)">
+                        @Html.DisplayFor(modelItem => item.loadLength)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.price)">
+                        @Html.DisplayFor(modelItem => item.price)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.comments)">
+                        @Html.DisplayFor(modelItem => item.comments)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.postingDate)">
+                        @Html.DisplayFor(modelItem => item.postingDate)
+                    </td>
+                    @if (User.IsInRole("Administrator") || User.IsInRole("Broker"))
+                    {
+                        <td data-label="Actions" class="text-nowrap">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('jobsTable');
+            if (table) {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    row.addEventListener('dblclick', function () {
+                        const jobId = this.getAttribute('data-job-id');
+                        if (jobId) {
+                            window.location.href = `/Job/Details/${jobId}`;
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+}
