@@ -3,72 +3,77 @@
     ViewData["Title"] = "My Saved Jobs";
 }
 
-<h2 class="mb-3">My Saved Jobs</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">My Saved Jobs</h2>
+</div>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">Još nema sačuvanih poslova.</div>
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle"></i> No saved jobs yet.
+    </div>
 }
 else
 {
-    <table class="table table-striped align-middle">
-        <thead>
-            <tr>
-                <th>Job ID</th>
-                <th>Saved at</th>
-                <th>Origin</th>
-                <th>Destination</th>
-                <th>Load date</th>
-                <th>Trailer</th>
-                <th>Load type</th>
-                <th>Price</th>
-                <th>Compare</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                
-                <tr data-jobid="@item.JobId">
-                    <td>@item.Job?.Id</td>
-                    <td>@item.savedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@item.Job?.locationOrigin</td>
-                    <td>@item.Job?.locationDestination</td>
-                    <td>@item.Job?.loadDate.ToShortDateString()</td>
-                    <td>@item.Job?.TrailerTypes</td>
-                    <td>@item.Job?.LoadType</td>
-                    <td class="text-end">@item.Job?.price.ToString("C")</td>
-
-                    <td class="text-center">
-                        <button type="button"
-                                class="btn btn-sm btn-outline-primary btn-compare"
-                                onclick="addToCompare(@item.JobId)"
-                                title="Add to Comparator">
-                            Compare
-                        </button>
-                    </td>
-
-                    <td class="text-end">
-                        <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="jobId" value="@item.JobId" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
-                        </form>
-                       
-                        <a asp-controller="SavedJob"
-                           asp-action="Details"
-                           asp-route-id="@item.Id"
-                           asp-route-returnUrl="@Url.Action("Index", "SavedJob")"
-                           class="btn btn-sm btn-outline-secondary ms-1">
-                            View
-                        </a>
-
-                    </td>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered responsive-card-table align-middle">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Job ID</th>
+                    <th>Saved at</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Load date</th>
+                    <th>Trailer</th>
+                    <th>Load type</th>
+                    <th>Price</th>
+                    <th class="text-center">Compare</th>
+                    <th class="text-center">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr data-jobid="@item.JobId">
+                        <td data-label="Job ID">@item.Job?.Id</td>
+                        <td data-label="Saved at">@item.savedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                        <td data-label="Origin">@item.Job?.locationOrigin</td>
+                        <td data-label="Destination">@item.Job?.locationDestination</td>
+                        <td data-label="Load date">@item.Job?.loadDate.ToShortDateString()</td>
+                        <td data-label="Trailer">@item.Job?.TrailerTypes</td>
+                        <td data-label="Load type">@item.Job?.LoadType</td>
+                        <td data-label="Price" class="text-end">@item.Job?.price.ToString("C")</td>
+
+                        <td data-label="Compare" class="text-center">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary btn-compare"
+                                    onclick="addToCompare(@item.JobId)"
+                                    title="Add to Comparator">
+                                <i class="bi bi-bar-chart"></i> Compare
+                            </button>
+                        </td>
+
+                        <td data-label="Actions" class="text-end text-nowrap">
+                            <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="jobId" value="@item.JobId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove from saved">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </form>
+                            <a asp-controller="SavedJob"
+                               asp-action="Details"
+                               asp-route-id="@item.Id"
+                               asp-route-returnUrl="@Url.Action("Index", "SavedJob")"
+                               class="btn btn-sm btn-outline-secondary ms-1" title="View details">
+                                <i class="bi bi-card-list"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 @section Scripts {
@@ -109,14 +114,15 @@ else
               const id = parseInt(row.getAttribute("data-jobid"));
               const btn = row.querySelector(".btn-compare");
               if (!btn) return;
+
               if (sel.has(id)) {
                 btn.classList.remove("btn-outline-primary");
                 btn.classList.add("btn-primary");
-                btn.textContent = "In compare";
+                btn.innerHTML = `<i class="bi bi-bar-chart"></i> In compare`;
               } else {
                 btn.classList.add("btn-outline-primary");
                 btn.classList.remove("btn-primary");
-                btn.textContent = "Compare";
+                btn.innerHTML = `<i class="bi bi-bar-chart"></i> Compare`;
               }
             });
           }
@@ -125,4 +131,3 @@ else
         })();
     </script>
 }
-
