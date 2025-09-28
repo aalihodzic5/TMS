@@ -237,7 +237,13 @@ namespace TMS.Controllers
 
             ViewBag.DriverList = drivers;
             ViewBag.TrailerTypes = new SelectList(Enum.GetValues(typeof(TrailerTypes)));
-            ViewBag.LoadTypes = new SelectList(Enum.GetValues(typeof(LoadType)));
+            ViewBag.LoadTypes = new SelectList(
+                                Enum.GetValues(typeof(LoadType))
+                                    .Cast<LoadType>()
+                                    .Select(e => new { Id = (int)e, Name = e.ToString() }),
+                                "Id",
+                                "Name"
+                            );
 
             var jobs = _context.Job.AsQueryable();
             
@@ -309,10 +315,7 @@ namespace TMS.Controllers
             {   
                 jobs = jobs.Where(j => j.loadLength <= 1.05*length.Value && j.loadLength >= 0.95 * length.Value);
             }
-            
-            
-
-
+  
             return View(jobs.ToList());
         }
 

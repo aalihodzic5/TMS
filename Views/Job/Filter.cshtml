@@ -6,215 +6,220 @@
 
 @using System.Text.Json
 
-<form method="get" class="mb-4">
+@**************@
 
-    <div class="row">
-        <div class="col-md-3">
-            <label>Driver</label>
-            <select name="DriverId" class="form-control">
-                <option value="">-- Select driver --</option>
-                @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
-                {
-                    <option value="@driver.Value">@driver.Text</option>
-                }
-            </select>
-        </div>
 
-        <div class="col-md-3">
-            <label>Min price</label>
-            <input type="number" name="minPrice" class="form-control" />
-        </div>
 
-        <div class="col-md-3">
-            <label>Date From</label>
-            <input type="date" name="dateFrom" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Min distance (Load)</label>
-            <input type="number" name="minDistanceLoad" class="form-control" />
-        </div>
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Job Filter</h4>
     </div>
+    <div class="card-body">
+        <form method="get">
+            <div class="row g-3">
+                <!-- Driver -->
+                <div class="col-md-3">
+                    <label class="form-label">Driver</label>
+                    <select name="DriverId" class="form-select">
+                        <option value="">-- Select driver --</option>
+                        @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+                        {
+                            <option value="@driver.Value">@driver.Text</option>
+                        }
+                    </select>
+                </div>
+                <!-- Min Price -->
+                <div class="col-md-3">
+                    <label class="form-label">Min price</label>
+                    <input type="number" name="minPrice" class="form-control" />
+                </div>
+                <!-- Date From -->
+                <div class="col-md-3">
+                    <label class="form-label">Date From</label>
+                    <input type="date" name="dateFrom" class="form-control" />
+                </div>
+                <!-- Min Distance (Load) -->
+                <div class="col-md-3">
+                    <label class="form-label">Min distance (Load)</label>
+                    <input type="number" name="minDistanceLoad" class="form-control" />
+                </div>
+                <!-- Load Type -->
+                <div class="col-md-3">
+                    <label class="form-label">Load type</label>
+                    <select name="loadType" class="form-select">
+                        <option value="">-- Select load type --</option>
+                        @foreach (var loadType in (SelectList)ViewBag.LoadTypes)
+                        {
+                            <option value="@loadType.Value">@loadType.Text</option>
+                        }
+                    </select>
+                </div>
+                <!-- Max Price -->
+                <div class="col-md-3">
+                    <label class="form-label">Max price</label>
+                    <input type="number" name="maxPrice" class="form-control" />
+                </div>
+                <!-- Date To -->
+                <div class="col-md-3">
+                    <label class="form-label">Date To</label>
+                    <input type="date" name="dateTo" class="form-control" />
+                </div>
+                <!-- Max Distance (Load) -->
+                <div class="col-md-3">
+                    <label class="form-label">Max distance (Load)</label>
+                    <input type="number" name="maxDistanceLoad" class="form-control" />
+                </div>
+                <!-- Trailer Type -->
+                <div class="col-md-3">
+                    <label class="form-label">Trailer type</label>
+                    <select name="trailerType" class="form-select">
+                        <option value="">-- Select trailer type --</option>
+                        @foreach (var trailerType in (SelectList)ViewBag.TrailerTypes)
+                        {
+                            <option value="@trailerType.Value">@trailerType.Text</option>
+                        }
+                    </select>
+                </div>
+                <!-- Company -->
+                <div class="col-md-3">
+                    <label class="form-label">Company</label>
+                    <input type="text" name="companyName" class="form-control" />
+                </div>
+                <!-- Destination (Load) -->
+                <div class="col-md-3">
+                    <label class="form-label">Destination (Load)</label>
+                    <input type="text" name="destinationLoad" class="form-control" />
+                </div>
+                <!-- Min Distance (Unload) -->
+                <div class="col-md-3">
+                    <label class="form-label">Min Distance (Unload)</label>
+                    <input type="number" name="minDistanceUnload" class="form-control" />
+                </div>
+                <!-- Weight (+-5%) -->
+                <div class="col-md-3">
+                    <label class="form-label">Weight(+-5%)</label>
+                    <input type="text" name="weight" class="form-control" />
+                </div>
+                <!-- Length (+-5%) -->
+                <div class="col-md-3">
+                    <label class="form-label">Length(+-5%)</label>
+                    <input type="text" name="length" class="form-control" />
+                </div>
+                <!-- Destination (Unload) -->
+                <div class="col-md-3">
+                    <label class="form-label">Destination (Unload)</label>
+                    <input type="text" name="destinationUnload" class="form-control" />
+                </div>
+                <!-- Max Distance (Unload) -->
+                <div class="col-md-3">
+                    <label class="form-label">Max Distance (Unload)</label>
+                    <input type="number" name="maxDistanceUnload" class="form-control" />
+                </div>
+            </div>
 
-    <div class="row mt-2">
-        <div class="col-md-3">
-            <label>Load type</label>
-            <select name="loadType" class="form-control">
-                <option value="">-- Select load type --</option>
-                @foreach (var loadType in (SelectList)ViewBag.LoadTypes)
-                {
-                    <option value="@loadType.Value">@loadType.Text</option>
-                }
-            </select>
-        </div>
-
-        <div class="col-md-3">
-            <label>Max price</label>
-            <input type="number" name="maxPrice" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Date To</label>
-            <input type="date" name="dateTo" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Max distance (Load)</label>
-            <input type="number" name="maxDistanceLoad" class="form-control" />
-        </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                <a asp-controller="Job" asp-action="Map" class="btn btn-info">View on map</a>
+            </div>
+        </form>
     </div>
-
-    <div class="row mt-2">
-        <div class="col-md-3">
-            <label>Trailer type</label>
-            <select name="trailerType" class="form-control">
-                <option value="">-- Select trailer type --</option>
-                @foreach (var trailerType in (SelectList)ViewBag.TrailerTypes)
-                {
-                    <option value="@trailerType.Value">@trailerType.Text</option>
-                }
-            </select>
-        </div>
-
-        
-        <div class="col-md-3">
-            <label>Company</label>
-            <input type="text" name="companyName" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Destination (Load)</label>
-            <input type="text" name="destinationLoad" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Min Distance (Unload)</label>
-            <input type="number" name="minDistanceUnload" class="form-control" />
-        </div>
-    </div>
-
-    <div class="row mt-2">
-        <div class="col-md-3">
-            <label>Weight(+-5%)</label>
-            <input type="text" name="weight" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Length(+-5%)</label>
-            <input type="text" name="length" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Destination (Unload)</label>
-            <input type="text" name="destinationUnload" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>Max Distance (Unload)</label>
-            <input type="number" name="maxDistanceUnload" class="form-control" />
-        </div>
-    </div>
-
-    
-
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary w-100">Primijeni filter</button>
-        </div>
-    </div>
-    
-</form>
-
-<form asp-controller="Job" asp-action="Map" method="get">
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary w-100">View on map</button>
-        </div>
-    </div>
-</form>
-
+</div>
 
 <hr />
 
 <!-- Rezultati -->
-<table class="table table-bordered table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th>Published</th>
-            <th>Origin</th>
-            <th>Destination</th>
-            <th>Date</th>
-            <th>Trailer Type</th>
-            <th>Load Type</th>
-            <th>Distance</th>
-            <th>Price</th>
-            <th>Save</th>
-            <th>Offer</th>
-            <th>Assign</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var job in Model)
-        {
-            <tr>
-                <td>@job.postingDate</td>
-                <td>@job.locationOrigin</td>
-                <td>@job.locationDestination</td>
-                <td>@job.loadDate.ToShortDateString()</td>
-                <td>@job.TrailerTypes</td>
-                <td>@job.LoadType</td>
-                <td>@(job.distanceOrigin + job.distanceDestination) km</td>
-                <td>@job.price.ToString("C")</td>
-                <!-- SAVE / UNSAVE -->
-                <td class="text-center">
-                    @if (savedIds.Contains(job.Id))
-                    {
-                        <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="jobId" value="@job.Id" />
-                            <button type="submit" class="btn btn-warning btn-sm" title="Remove from saved">★ Saved</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form method="post" asp-controller="SavedJob" asp-action="Save" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="jobId" value="@job.Id" />
-                            <button type="submit" class="btn btn-outline-warning btn-sm" title="Save this job">☆ Save</button>
-                        </form>
-                    }
-                </td>
-
-                <td>
-                    @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
-                    {
-                        <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="jobId" value="@job.Id" />
-                            <input type="number" name="offerPrice" class="form-control form-control-sm" step="0.01" placeholder="€" required style="width: 80px;" />
-                            <button type="submit" class="btn btn-success btn-sm ms-1">✔</button>
-                        </form>
-                    }
-                </td>
-                <td>
-                    <form method="post" asp-action="AssignDriver" class="d-flex align-items-center">
-                        <input type="hidden" name="jobId" value="@job.Id" />
-                        <select name="driverId" class="form-select form-select-sm">
-                            <option value="">--</option>
-                            @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover responsive-card-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Job ID</th>
+                    <th>Published</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Date</th>
+                    <th>Trailer Type</th>
+                    <th>Load Type</th>
+                    <th>Distance</th>
+                    <th>Price</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var job in Model)
+                {
+                    <tr>
+                        <td data-label="Job ID">@job.Id</td>
+                        <td data-label="Published">@job.postingDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td data-label="Origin">@job.locationOrigin</td>
+                        <td data-label="Destination">@job.locationDestination</td>
+                        <td data-label="Date">@job.loadDate.ToShortDateString()</td>
+                        <td data-label="Trailer Type">@job.TrailerTypes</td>
+                        <td data-label="Load Type">@job.LoadType</td>
+                        <td data-label="Distance">@(job.distanceOrigin + job.distanceDestination) km</td>
+                        <td data-label="Price">@job.price.ToString("C")</td>
+                        <td data-label="Actions" class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <!-- SAVE / UNSAVE Button -->
+                            @if (savedIds.Contains(job.Id))
                             {
-                                <option value="@driver.Value">@driver.Text</option>
+                                <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="jobId" value="@job.Id" />
+                                    <button type="submit" class="btn btn-warning btn-sm" title="Remove from saved">
+                                        <i class="bi bi-star-fill"></i> Saved
+                                    </button>
+                                </form>
                             }
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-success ms-1">✔</button>
-                    </form>
-                </td>
-
-            </tr>
-        }
-    </tbody>
-</table>
-
+                            else
+                            {
+                                <form method="post" asp-controller="SavedJob" asp-action="Save" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="jobId" value="@job.Id" />
+                                    <button type="submit" class="btn btn-outline-warning btn-sm" title="Save this job">
+                                        <i class="bi bi-star"></i> Save
+                                    </button>
+                                </form>
+                            }
+                            <!-- Offer Form -->
+                            @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
+                            {
+                                <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center m-0 gap-1">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="jobId" value="@job.Id" />
+                                    <input type="number" name="offerPrice" class="form-control form-control-sm" step="0.01" placeholder="€" required style="width: 80px;" />
+                                    <button type="submit" class="btn btn-success btn-sm" title="Send offer">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </form>
+                            }
+                            <!-- Assign Form -->
+                            <form method="post" asp-action="AssignDriver" class="d-flex align-items-center m-0 gap-1">
+                                <input type="hidden" name="jobId" value="@job.Id" />
+                                <select name="driverId" class="form-select form-select-sm">
+                                    <option value="">--</option>
+                                    @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+                                    {
+                                        <option value="@driver.Value">@driver.Text</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-success btn-sm" title="Assign driver">
+                                    <i class="bi bi-person-check"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info" role="alert">
+        No jobs found matching the specified filters.
+    </div>
+}
 
 @section Scripts {
     <script>
@@ -222,4 +227,5 @@
         localStorage.setItem("searchResults", JSON.stringify(searchResults));
     </script>
 }
+
 

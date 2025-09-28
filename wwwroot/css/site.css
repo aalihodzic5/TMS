@@ -106,7 +106,7 @@ footer {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/* Tabele */
+/* Tabele *//*
 table {
     width: 100%;
     border-collapse: collapse;
@@ -134,3 +134,78 @@ table {
         color: #0d6efd;
         text-decoration: underline;
     }
+
+    */
+
+
+/*Tables*/
+
+/* Basic table styling for all screen sizes */
+.responsive-card-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+    .responsive-card-table th,
+    .responsive-card-table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .responsive-card-table thead tr {
+        background-color: #343a40;
+        color: #ffffff;
+    }
+
+    .responsive-card-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .responsive-card-table tbody tr:hover {
+        background-color: #e2e6ea;
+    }
+
+/* Responsive styles for small screens */
+@media screen and (max-width: 768px) {
+    .responsive-card-table thead {
+        display: none; /* Hide the original table header */
+    }
+
+    .responsive-card-table tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .responsive-card-table td {
+        display: block;
+        text-align: right;
+        padding: 10px 15px;
+        position: relative;
+        border: none;
+    }
+
+        .responsive-card-table td:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #555;
+        }
+
+        /* Style for the actions column on small screens */
+        .responsive-card-table td:last-child {
+            text-align: left;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .responsive-card-table td a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+}
+

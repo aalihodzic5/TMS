@@ -14,6 +14,7 @@ else
     <table class="table table-striped align-middle">
         <thead>
             <tr>
+                <th>Job ID</th>
                 <th>Saved at</th>
                 <th>Origin</th>
                 <th>Destination</th>
@@ -30,6 +31,7 @@ else
             {
                 
                 <tr data-jobid="@item.JobId">
+                    <td>@item.Job?.Id</td>
                     <td>@item.savedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@item.Job?.locationOrigin</td>
                     <td>@item.Job?.locationDestination</td>

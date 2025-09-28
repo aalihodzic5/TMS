@@ -21,102 +21,85 @@
     </a>
 }
 
-<table class="table">
+
+
+<table class="table responsive-card-table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.loadDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrailerTypes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoadType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.distanceOrigin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.distanceDestination)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.locationOrigin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.locationDestination)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.companyName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.loadWeight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.loadLength)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.comments)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.postingDate)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.loadDate)</th>
+            <th>@Html.DisplayNameFor(model => model.TrailerTypes)</th>
+            <th>@Html.DisplayNameFor(model => model.LoadType)</th>
+            <th>@Html.DisplayNameFor(model => model.distanceOrigin)</th>
+            <th>@Html.DisplayNameFor(model => model.distanceDestination)</th>
+            <th>@Html.DisplayNameFor(model => model.locationOrigin)</th>
+            <th>@Html.DisplayNameFor(model => model.locationDestination)</th>
+            <th>@Html.DisplayNameFor(model => model.companyName)</th>
+            <th>@Html.DisplayNameFor(model => model.loadWeight)</th>
+            <th>@Html.DisplayNameFor(model => model.loadLength)</th>
+            <th>@Html.DisplayNameFor(model => model.price)</th>
+            <th>@Html.DisplayNameFor(model => model.comments)</th>
+            <th>@Html.DisplayNameFor(model => model.postingDate)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.loadDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrailerTypes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LoadType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.distanceOrigin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.distanceDestination)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.locationOrigin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.locationDestination)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.companyName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.loadWeight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.loadLength)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.comments)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.postingDate)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td data-label="@Html.DisplayNameFor(model => model.Id)">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.loadDate)">
+                    @Html.DisplayFor(modelItem => item.loadDate)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.TrailerTypes)">
+                    @Html.DisplayFor(modelItem => item.TrailerTypes)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.LoadType)">
+                    @Html.DisplayFor(modelItem => item.LoadType)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.distanceOrigin)">
+                    @Html.DisplayFor(modelItem => item.distanceOrigin)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.distanceDestination)">
+                    @Html.DisplayFor(modelItem => item.distanceDestination)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.locationOrigin)">
+                    @Html.DisplayFor(modelItem => item.locationOrigin)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.locationDestination)">
+                    @Html.DisplayFor(modelItem => item.locationDestination)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.companyName)">
+                    @Html.DisplayFor(modelItem => item.companyName)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.loadWeight)">
+                    @Html.DisplayFor(modelItem => item.loadWeight)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.loadLength)">
+                    @Html.DisplayFor(modelItem => item.loadLength)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.price)">
+                    @Html.DisplayFor(modelItem => item.price)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.comments)">
+                    @Html.DisplayFor(modelItem => item.comments)
+                </td>
+                <td data-label="@Html.DisplayNameFor(model => model.postingDate)">
+                    @Html.DisplayFor(modelItem => item.postingDate)
+                </td>
                 @if (User.IsInRole("Administrator") || User.IsInRole("Broker"))
                 {
-                <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            }
-        </tr>
-}
+                    <td data-label="Actions">
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
+            </tr>
+        }
     </tbody>
 </table>
+
+
