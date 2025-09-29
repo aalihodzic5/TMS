@@ -127,6 +127,22 @@
 
 <hr />
 
+
+
+<div class="d-flex justify-content-end mb-3">
+    <a asp-controller="PromptBuilder" asp-action="GeminiAnalyze"
+       class="btn text-white"
+       style="border-radius:15px;
+              background: linear-gradient(90deg, #4285F4 0%, #9b72cb 50%, #d96570 100%);
+              border: none;">
+        <img src="~/images/gemini_icon.svg" alt="Gemini"
+             style="width:18px;height:18px; margin-right:6px; filter: brightness(0) invert(1);" />
+        Analyze with Gemini
+    </a>
+</div>
+
+
+
 <!-- Rezultati -->
 @if (Model.Any())
 {

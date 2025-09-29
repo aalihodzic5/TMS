@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
+using TMS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,8 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 builder.Services.AddSignalR();
+
+builder.Services.AddSingleton<GeminiService>();
 
 var app = builder.Build();
 

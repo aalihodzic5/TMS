@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 connection.on("ReceiveNotification", function (senderUserId, message, link) { // Note: added senderUserId based on your Hub
     // 1. Display as Toast
-    console.log("Notifikacija");
+    //console.log("Notifikacija");
     if (toastBody && toastBootstrap) {
         toastBody.innerHTML = `New notification from ${senderUserId}: <a href="${link}" class="text-white">${message}</a>`;
         toastBootstrap.show();

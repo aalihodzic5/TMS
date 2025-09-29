@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Gemini analiza poslova";
+    var result = ViewBag.GeminiResult as string ?? "";
+}
+
+<h2 class="mb-4">Rezultati analize (Gemini)</h2>
+
+@if (!string.IsNullOrWhiteSpace(result))
+{
+    var lines = result.Split('\n');
+
+    // Ako sadrži Markdown tabelu (| kolone |), prikaži tabelu
+    if (lines.Any(l => l.Contains("|")))
+    {
+        var tableLines = lines.Where(l => l.Contains("|")).ToList();
+        var headers = tableLines.First().Split('|', StringSplitOptions.RemoveEmptyEntries).Select(h => h.Trim()).ToList();
+        var rows = tableLines.Skip(2).Select(l => l.Split('|', StringSplitOptions.RemoveEmptyEntries).Select(v => v.Trim()).ToList()).ToList();
+
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            @foreach (var h in headers)
+                            {
+                                <th>@h</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in rows)
+                        {
+                            <tr>
+                                @foreach (var cell in row)
+                                {
+                                    <td>@cell</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    // Sažetak ispod tabele
+    <div class="mt-4 p-3 rounded shadow-sm" style="background:#f9f9f9;">
+        <h5 class="fw-bold" style="background: linear-gradient(90deg, #4285F4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            📌 Sažetak preporuke
+        </h5>
+        <p style="font-size:1.05rem; line-height:1.6; background: linear-gradient(90deg, #4285F4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            @result
+        </p>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">Nema dostupnih rezultata od Gemini-ja.</div>
+}

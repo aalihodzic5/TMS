@@ -35,6 +35,19 @@ namespace TMS.Controllers
 
 
 
+
+
+        /*************************
+         * 
+         * gemini
+         * *****************/
+
+
+
+
+        /****************/
+
+
         // GET: Job
         public async Task<IActionResult> Index()
         {
@@ -88,12 +101,13 @@ namespace TMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            
             ViewBag.TrailerTypes = new SelectList(Enum.GetValues(typeof(TrailerTypes)));
             ViewBag.LoadTypes = new SelectList(Enum.GetValues(typeof(LoadType)));
           
             return View(job);
         }
-
+        
 
         // GET: Job/Edit/5
         public async Task<IActionResult> Edit(int? id)
