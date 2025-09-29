@@ -34,7 +34,7 @@ else
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr data-jobid="@item.JobId">
+                    <tr data-jobid="@item.JobId" data-savedjobid="@item.Id">
                         <td data-label="Job ID">@item.Job?.Id</td>
                         <td data-label="Saved at">@item.savedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                         <td data-label="Origin">@item.Job?.locationOrigin</td>
@@ -61,13 +61,6 @@ else
                                     <i class="bi bi-trash"></i> Remove
                                 </button>
                             </form>
-                            <a asp-controller="SavedJob"
-                               asp-action="Details"
-                               asp-route-id="@item.Id"
-                               asp-route-returnUrl="@Url.Action("Index", "SavedJob")"
-                               class="btn btn-sm btn-outline-secondary ms-1" title="View details">
-                                <i class="bi bi-card-list"></i> View
-                            </a>
                         </td>
                     </tr>
                 }
@@ -127,7 +120,19 @@ else
             });
           }
 
-          document.addEventListener("DOMContentLoaded", updateCompareButtons);
+          document.addEventListener("DOMContentLoaded", function() {
+            updateCompareButtons();
+
+            // Handle double click for details
+            document.querySelectorAll("tbody tr").forEach(row => {
+                row.addEventListener("dblclick", function() {
+                    const savedJobId = this.getAttribute("data-savedjobid");
+                    if (savedJobId) {
+                        window.location.href = `/SavedJob/Details/${savedJobId}?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                    }
+                });
+            });
+          });
         })();
     </script>
 }

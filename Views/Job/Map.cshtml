@@ -39,7 +39,6 @@
                         <th>Origin</th>
                         <th>Dest</th>
                         <th>Price</th>
-                        <th class="text-center">Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,78 +206,72 @@
     });
 </script>
 
-
 <script>
     const storedResults = JSON.parse(localStorage.getItem("searchResults") || "[]");
     const tableBody = document.querySelector("#localResultsTable tbody");
 
     if (storedResults.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>Nema spremljenih podataka.</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>Nema spremljenih podataka.</td></tr>"; // colspan changed to 4 as there are 4 columns
     } else {
-            storedResults.forEach(job => {
-      const row = document.createElement("tr");
+        storedResults.forEach(job => {
+            const row = document.createElement("tr");
 
-      // ✅ SIGURNO UZMI ID BEZ OBZIRA NA NAZIV POLJA
-      const rawId = job.id ?? job.jobId ?? job.Id ?? job.ID ?? null;
-      const jobId = rawId != null ? Number(rawId) : null;
-      const hasValidId = Number.isInteger(jobId) && jobId > 0;
+            const rawId = job.id ?? job.jobId ?? job.Id ?? job.ID ?? null;
+            const jobId = rawId != null ? Number(rawId) : null;
+            const hasValidId = Number.isInteger(jobId) && jobId > 0;
 
-      // ✅ SIGURNO FORMATIRAJ CIJENU
-      const cijena =
-        typeof job.price === "number"
-          ? job.price.toFixed(2)
-          : (parseFloat(job.price) ? parseFloat(job.price).toFixed(2) : "0.00");
+            const cijena =
+                typeof job.price === "number"
+                    ? job.price.toFixed(2)
+                    : (parseFloat(job.price) ? parseFloat(job.price).toFixed(2) : "0.00");
 
-      row.innerHTML = `
-        <td>${new Date(job.postingDate).toLocaleDateString()}</td>
-        <td>${job.locationOrigin || "-"}</td>
-        <td>${job.locationDestination || "-"}</td>
-        <td>${cijena} €</td>
-        <td>
-          ${
-            hasValidId
-              ? `<a href="/Job/Details/${jobId}" class="btn btn-sm btn-outline-primary details-link">Detalji</a>`
-              : `<span class="text-muted">N/A</span>`
-          }
-        </td>
-      `;
+            row.innerHTML = `
+                <td>${new Date(job.postingDate).toLocaleDateString()}</td>
+                <td>${job.locationOrigin || "-"}</td>
+                <td>${job.locationDestination || "-"}</td>
+                <td>${cijena} €</td>
+            `;
 
-      // postojeći handler za crtanje rute na klik cijelog reda
-      row.addEventListener("click", async () => {
-        try {
-          const start = await geocodeLocation(job.locationOrigin);
-          const end = await geocodeLocation(job.locationDestination);
+            let clickTimer = null; // Dodajte timer za click događaj
 
-          markers.forEach(m => map.removeLayer(m));
-          markers = [];
-          if (routeLine) map.removeLayer(routeLine);
+            row.addEventListener("click", async () => {
+                // Postavite timer. Ako se dblclick dogodi unutar 200ms, ovaj timer će biti poništen.
+                clickTimer = setTimeout(async () => {
+                    try {
+                        const start = await geocodeLocation(job.locationOrigin);
+                        const end = await geocodeLocation(job.locationDestination);
 
-          const markerStart = L.marker([start.lat, start.lng]).addTo(map).bindPopup("Start").openPopup();
-          const markerEnd = L.marker([end.lat, end.lng]).addTo(map).bindPopup("End").openPopup();
-          markers.push(markerStart, markerEnd);
+                        markers.forEach(m => map.removeLayer(m));
+                        markers = [];
+                        if (routeLine) map.removeLayer(routeLine);
 
-          await getRoute([start.lng, start.lat], [end.lng, end.lat]);
-        } catch (error) {
-          alert("Ne mogu prikazati rutu: " + error.message);
-        }
-      });
+                        const markerStart = L.marker([start.lat, start.lng]).addTo(map).bindPopup("Start").openPopup();
+                        const markerEnd = L.marker([end.lat, end.lng]).addTo(map).bindPopup("End").openPopup();
+                        markers.push(markerStart, markerEnd);
 
-      // spriječi bubble klika sa "Detalji" dugmeta
-      const link = row.querySelector(".details-link");
-      if (link) {
-        link.addEventListener("click", (e) => {
-          e.stopPropagation();
+                        await getRoute([start.lng, start.lat], [end.lng, end.lat]);
+                    } catch (error) {
+                        alert("Ne mogu prikazati rutu: " + error.message);
+                    }
+                }, 800); //kasnjenje od 800ms
+            });
+
+            row.addEventListener("dblclick", () => {
+                clearTimeout(clickTimer); // Poništite single click timer
+                if (hasValidId) {
+                    window.location.href = `/Job/Details/${jobId}`;
+                } else {
+                    console.warn("Job nema validan ID za Details link na dvostruki klik:", job);
+                    alert("Detalji za ovaj posao nisu dostupni (nedostaje ID).");
+                }
+            });
+
+            if (!hasValidId) {
+                console.warn("Job nema validan ID:", job);
+            }
+
+            tableBody.appendChild(row);
         });
-      }
-
-      // ✅ Ako nema validan ID, bar zaloguj da znaš šta ti fali u localStorage
-      if (!hasValidId) {
-        console.warn("Job nema validan ID za Details link:", job);
-      }
-
-      tableBody.appendChild(row);
-    });
-
     }
 </script>
 
