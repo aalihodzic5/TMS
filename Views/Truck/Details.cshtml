@@ -4,51 +4,68 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Truck</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.brand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.brand)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.model)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.model)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.licensePlate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.licensePlate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.specification)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.specification)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.nextServiceDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.nextServiceDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.registration)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.registration)
-        </dd>
-    </dl>
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header d-flex align-items-center" style="background-color: #2c2f33; color: #ffffff;">
+            <h3 class="mb-0 me-auto">
+                <i class="bi bi-truck me-2"></i> Truck Details
+            </h3>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-light btn-sm">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+            </a>
+        </div>
+
+
+
+        
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <h6 class="text-muted">Brand</h6>
+                    <p class="fw-semibold">@Model.brand</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">Model</h6>
+                    <p class="fw-semibold">@Model.model</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">Licence Plate</h6>
+                    <p class="fw-semibold">
+                        <i class="bi bi-telephone me-1"></i>@Model.licensePlate
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">Specification</h6>
+                    <p class="fw-semibold">@Model.specification</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">Next Service Date</h6>
+                    <p class="fw-semibold">
+                        <i class="bi bi-truck me-1"></i>@Model.nextServiceDate
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">Registration</h6>
+                    <p class="fw-semibold">
+                        <i class="bi bi-truck me-1"></i>@Model.registration
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-end bg-light rounded-bottom-4">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+

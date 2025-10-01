@@ -1,14 +1,10 @@
 ﻿@model List<TMS.Models.Job>
 @{
-    ViewData["Title"] = "Filter";
+    ViewData["Title"] = "Find Job";
     var savedIds = (ViewBag.SavedIds as HashSet<int>) ?? new HashSet<int>();
 }
 
 @using System.Text.Json
-
-@**************@
-
-
 
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-dark text-white">
@@ -183,7 +179,7 @@
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="jobId" value="@job.Id" />
                                     <button type="submit" class="btn btn-warning btn-sm" title="Remove from saved">
-                                        <i class="bi bi-star-fill"></i> Saved
+                                        <i class="fa-solid fa-star"></i> Saved
                                     </button>
                                 </form>
                             }
@@ -193,7 +189,7 @@
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="jobId" value="@job.Id" />
                                     <button type="submit" class="btn btn-outline-warning btn-sm" title="Save this job">
-                                        <i class="bi bi-star"></i> Save
+                                        <i class="fa-regular fa-star"></i> Save
                                     </button>
                                 </form>
                             }
@@ -205,7 +201,7 @@
                                     <input type="hidden" name="jobId" value="@job.Id" />
                                     <input type="number" name="offerPrice" class="form-control form-control-sm" step="0.01" placeholder="€" required style="width: 80px;" />
                                     <button type="submit" class="btn btn-success btn-sm" title="Send offer">
-                                        <i class="bi bi-send"></i>
+                                        <i class="fa-solid fa-handshake"></i>
                                     </button>
                                 </form>
                             }
@@ -220,7 +216,7 @@
                                     }
                                 </select>
                                 <button type="submit" class="btn btn-success btn-sm" title="Assign driver">
-                                    <i class="bi bi-person-check"></i>
+                                    <i class="fa-solid fa-user-check"></i>
                                 </button>
                             </form>
                         </td>

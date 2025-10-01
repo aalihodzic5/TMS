@@ -212,7 +212,7 @@ namespace TMS.Controllers
 
         [Authorize(Roles = "Dispatcher, Administrator")]
 
-        public IActionResult Filter(
+        public async Task<IActionResult> Filter(
         string? DriverId,
         DateTime? dateFrom,
         DateTime? dateTo,
@@ -329,8 +329,17 @@ namespace TMS.Controllers
             {   
                 jobs = jobs.Where(j => j.loadLength <= 1.05*length.Value && j.loadLength >= 0.95 * length.Value);
             }
-  
-            return View(jobs.ToList());
+
+            var uid = _userManager.GetUserId(User);
+            var savedIds = (await _context.SavedJob
+                .Where(s => s.UserId == uid)
+                .Select(s => s.JobId)
+                .ToListAsync())
+                .ToHashSet();
+
+            ViewBag.SavedIds = savedIds;
+
+            return View(await jobs.ToListAsync());
         }
 
 
