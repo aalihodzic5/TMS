@@ -2,23 +2,7 @@
     ViewData["Title"] = "Jobs in map view";
 }
 
-<!--
-<h3>Unesi lokacije</h3>
-<form id="routeForm">
-    <label for="start">Početna lokacija:</label>
-    <input type="text" id="start" required placeholder="npr. Sarajevo" class="form-control" autocomplete="off" />
 
-    <label for="end">Krajnja lokacija:</label>
-    <input type="text" id="end" required placeholder="npr. Mostar" class="form-control" autocomplete="off" />
-
-    <button type="submit" class="btn btn-primary mt-2">Prikaži rutu</button>
-</form>
-
-<p class="mt-3"><strong>Ili klikni na mapu:</strong> Prvi klik postavlja početak, drugi klik kraj rute.</p>
-
--->
-
-<hr />
 <div class="row mt-4">
     <div class="col-md-8">
         <div id="map" style="height: 600px; width: 100%;"></div>
@@ -58,7 +42,43 @@
 <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
 
 <script>
-    const map = L.map('map').setView([43.8563, 18.4131], 7);
+    // --- MAP INIT ---
+const map = L.map('map').setView([43.8563, 18.4131], 7);
+
+// --- LAYERS ---
+const baseLayers = {
+    "🗺️ Streets (Default)": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }),
+
+    "🌍 Satellite": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    }),
+
+    "⛰️ Terrain": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data: &copy; OpenTopoMap contributors'
+    }),
+
+    "🚗 Traffic (via OpenStreetMap France)": L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap France'
+    })
+};
+
+// Add default
+baseLayers["🗺️ Streets (Default)"].addTo(map);
+
+// --- CONTROL ---
+
+    L.control.layers(
+        {
+            "🗺️ Streets": baseLayers["🗺️ Streets (Default)"],
+            "🌍 Satellite": baseLayers["🌍 Satellite"],
+            "⛰️ Terrain": baseLayers["⛰️ Terrain"],
+            "🚗 Traffic": baseLayers["🚗 Traffic (via OpenStreetMap France)"]
+        },
+        null,
+        { position: 'topright', collapsed: false }
+    ).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'

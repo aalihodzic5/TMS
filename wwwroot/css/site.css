@@ -1,33 +1,33 @@
-/* Osnovne postavke */
-html {
-    font-size: 14px;
-    position: relative;
-    min-height: 100%;
-}
-
-@media (min-width: 768px) {
+    /* Osnovne postavke */
     html {
-        font-size: 16px;
+        font-size: 14px;
+        position: relative;
+        min-height: 100%;
     }
-}
 
-body {
-    margin: 0;
-    padding: 0;
-    margin-bottom: 60px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-    color: #212529;
-}
+    @media (min-width: 768px) {
+        html {
+            font-size: 16px;
+        }
+    }
 
-/* Sidebar stil */
-.sidebar {
-    min-height: 100vh;
-    width: 220px;
-    background-color: #ffffff;
-    padding: 1rem;
-    border-right: 1px solid #dee2e6;
-}
+    body {
+        margin: 0;
+        padding: 0;
+        margin-bottom: 60px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    /* Sidebar stil */
+    .sidebar {
+        min-height: 100vh;
+        width: 220px;
+        background-color: #ffffff;
+        padding: 1rem;
+        border-right: 1px solid #dee2e6;
+    }
 
     .sidebar img {
         max-width: 100px;
@@ -53,10 +53,10 @@ body {
         font-weight: 500;
     }
 
-        .sidebar .nav-link:hover {
-            color: #0d6efd;
-            text-decoration: underline;
-        }
+    .sidebar .nav-link:hover {
+       color: #0d6efd;
+       text-decoration: underline;
+    }
 
     .sidebar .section-separator {
         margin-top: 2rem;
@@ -64,88 +64,55 @@ body {
         border-top: 1px solid #ccc;
     }
 
-/* Glavni sadržaj */
-main {
-    padding: 2rem;
-}
+    /* Glavni sadržaj */
+    main {
+        padding: 2rem;
+    }
 
-/* Footer */
-footer {
-    background-color: #e9ecef;
-    padding: 1rem;
-    text-align: center;
-    font-size: 0.875rem;
-    color: #6c757d;
-}
+    /* Footer */
+    footer {
+        background-color: #e9ecef;
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
 
     footer a {
         color: #0d6efd;
         text-decoration: none;
     }
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+    footer a:hover {
+        text-decoration: underline;
+    }
 
-/* Dugmad i forme */
-.btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
+    /* Dugmad i forme */
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
 
     .btn-primary:hover {
         background-color: #0b5ed7;
         border-color: #0a58ca;
     }
 
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-/* Tabele *//*
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-    table th,
-    table td {
-        padding: 0.75rem;
-        border: 1px solid #dee2e6;
-        text-align: left;
-    }
-
-    table thead {
-        background-color: #e9ecef;
+    .btn:focus,
+    .btn:active:focus,
+    .btn-link.nav-link:focus,
+    .form-control:focus,
+    .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
     }
 
 
-.main-content a {
-    color: #6c757d;
-    font-size: 0.85rem;
-}
-
-    .main-content a:hover {
-        color: #0d6efd;
-        text-decoration: underline;
+    /* Basic table styling for all screen sizes */
+    .responsive-card-table {
+        border-collapse: collapse;
+        width: 100%;
+        font-family: Arial, sans-serif;
     }
-
-    */
-
-
-/*Tables*/
-
-/* Basic table styling for all screen sizes */
-.responsive-card-table {
-    border-collapse: collapse;
-    width: 100%;
-    font-family: Arial, sans-serif;
-}
 
     .responsive-card-table th,
     .responsive-card-table td {
@@ -167,11 +134,11 @@ table {
         background-color: #e2e6ea;
     }
 
-/* Responsive styles for small screens */
-@media screen and (max-width: 768px) {
-    .responsive-card-table thead {
-        display: none; /* Hide the original table header */
-    }
+    /* Responsive styles for small screens */
+    @media screen and (max-width: 768px) {
+        .responsive-card-table thead {
+            display: none; /* Hide the original table header */
+        }
 
     .responsive-card-table tr {
         display: block;
@@ -188,25 +155,35 @@ table {
         border: none;
     }
 
-        .responsive-card-table td:before {
-            content: attr(data-label);
-            float: left;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #555;
-        }
+    .responsive-card-table td:before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #555;
+    }
 
-        /* Style for the actions column on small screens */
-        .responsive-card-table td:last-child {
-            text-align: left;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }
+    /* Style for the actions column on small screens */
+    .responsive-card-table td:last-child {
+        text-align: left;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+    }
 
-        .responsive-card-table td a {
-            display: inline-block;
-            margin-right: 10px;
-        }
+    .responsive-card-table td a {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    
+    #map {
+        height: 600px;
+        width: 100%;
+        border: 3px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+
 
 
 }
