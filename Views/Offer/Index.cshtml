@@ -83,9 +83,19 @@
 
                         @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
                         {
-                            <a asp-controller="Offer" asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary me-1" title="Assign offer">
-                                <i class="bi bi-person-plus"></i> Assign
-                            </a>
+                            <form method="post" asp-controller="Job" asp-action="AssignDriver" class="d-flex align-items-center m-0 gap-1">
+                                <input type="hidden" name="jobId" value="@item.Job.Id" />
+                                <select name="driverId" class="form-select form-select-sm">
+                                    <option value="">--</option>
+                                    @foreach (var driver in (List<SelectListItem>)ViewBag.DriverList)
+                                    {
+                                        <option value="@driver.Value">@driver.Text</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-success btn-sm" title="Assign driver">
+                                    <i class="fa-solid fa-user-check"></i>
+                                </button>
+                            </form>
                         }
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Delete offer">
                             <i class="bi bi-trash"></i> Delete

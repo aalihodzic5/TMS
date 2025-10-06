@@ -33,10 +33,23 @@ namespace TMS.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var offers = await _context.Offer.
-                        Include(o => o.User).
-                        Include(o => o.Job).
-                        Where(o => o.UserId == user.Id).ToListAsync();
+            var offers = await _context.Offer
+            .Include(o => o.User)
+            .Include(o => o.Job)
+            .ThenInclude(j => j.Driver) // ako Job ima DriverId
+            .ToListAsync();
+
+            
+            var drivers = await _context.Driver
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.FirstName + " " + d.LastName
+                })
+                .ToListAsync();
+
+            ViewBag.DriverList = drivers;
+
             return View(offers);
         }
 
