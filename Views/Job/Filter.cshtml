@@ -13,7 +13,6 @@
     <div class="card-body">
         <form method="get">
             <div class="row g-3">
-                <!-- Driver -->
                 <div class="col-md-3">
                     <label class="form-label">Driver</label>
                     <select name="DriverId" class="form-select">
@@ -24,22 +23,18 @@
                         }
                     </select>
                 </div>
-                <!-- Min Price -->
                 <div class="col-md-3">
                     <label class="form-label">Min price</label>
                     <input type="number" name="minPrice" class="form-control" />
                 </div>
-                <!-- Date From -->
                 <div class="col-md-3">
                     <label class="form-label">Date From</label>
                     <input type="date" name="dateFrom" class="form-control" />
                 </div>
-                <!-- Min Distance (Load) -->
                 <div class="col-md-3">
                     <label class="form-label">Min distance (Load)</label>
                     <input type="number" name="minDistanceLoad" class="form-control" />
                 </div>
-                <!-- Load Type -->
                 <div class="col-md-3">
                     <label class="form-label">Load type</label>
                     <select name="loadType" class="form-select">
@@ -50,22 +45,18 @@
                         }
                     </select>
                 </div>
-                <!-- Max Price -->
                 <div class="col-md-3">
                     <label class="form-label">Max price</label>
                     <input type="number" name="maxPrice" class="form-control" />
                 </div>
-                <!-- Date To -->
                 <div class="col-md-3">
                     <label class="form-label">Date To</label>
                     <input type="date" name="dateTo" class="form-control" />
                 </div>
-                <!-- Max Distance (Load) -->
                 <div class="col-md-3">
                     <label class="form-label">Max distance (Load)</label>
                     <input type="number" name="maxDistanceLoad" class="form-control" />
                 </div>
-                <!-- Trailer Type -->
                 <div class="col-md-3">
                     <label class="form-label">Trailer type</label>
                     <select name="trailerType" class="form-select">
@@ -76,17 +67,14 @@
                         }
                     </select>
                 </div>
-                <!-- Company -->
                 <div class="col-md-3">
                     <label class="form-label">Company</label>
                     <input type="text" name="companyName" class="form-control" />
                 </div>
-                <!-- Destination (Load) -->
                 <div class="col-md-3">
                     <label class="form-label">Destination (Load)</label>
                     <input type="text" name="destinationLoad" class="form-control" />
                 </div>
-                <!-- Min Distance (Unload) -->
                 <div class="col-md-3">
                     <label class="form-label">Min Distance (Unload)</label>
                     <input type="number" name="minDistanceUnload" class="form-control" />
@@ -101,12 +89,10 @@
                     <label class="form-label">Length(+-5%)</label>
                     <input type="text" name="length" class="form-control" />
                 </div>
-                <!-- Destination (Unload) -->
                 <div class="col-md-3">
                     <label class="form-label">Destination (Unload)</label>
                     <input type="text" name="destinationUnload" class="form-control" />
                 </div>
-                <!-- Max Distance (Unload) -->
                 <div class="col-md-3">
                     <label class="form-label">Max Distance (Unload)</label>
                     <input type="number" name="maxDistanceUnload" class="form-control" />
@@ -138,8 +124,6 @@
 </div>
 
 
-
-<!-- Rezultati -->
 @if (Model.Any())
 {
     <div class="table-responsive">
@@ -172,7 +156,6 @@
                         <td data-label="Distance">@(job.distanceOrigin + job.distanceDestination) km</td>
                         <td data-label="Price">@job.price.ToString("C")</td>
                         <td data-label="Actions" class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <!-- SAVE / UNSAVE Button -->
                             @if (savedIds.Contains(job.Id))
                             {
                                 <form method="post" asp-controller="SavedJob" asp-action="Unsave" class="m-0">
@@ -193,7 +176,6 @@
                                     </button>
                                 </form>
                             }
-                            <!-- Offer Form -->
                             @if (User.IsInRole("Administrator") || User.IsInRole("Dispatcher"))
                             {
                                 <form method="post" asp-controller="Offer" asp-action="SendOffer" class="d-flex align-items-center m-0 gap-1">
@@ -205,7 +187,6 @@
                                     </button>
                                 </form>
                             }
-                            <!-- Assign Form -->
                             <form method="post" asp-action="AssignDriver" class="d-flex align-items-center m-0 gap-1">
                                 <input type="hidden" name="jobId" value="@job.Id" />
                                 <select name="driverId" class="form-select form-select-sm">

@@ -1,16 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
-using TMS.Models.Enums;
 
 namespace TMS.Controllers
 {
@@ -37,7 +30,7 @@ namespace TMS.Controllers
         }
 
         // GET: Truck/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -80,7 +73,7 @@ namespace TMS.Controllers
         }
 
         // GET: Truck/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -139,7 +132,7 @@ namespace TMS.Controllers
 
 
         // GET: Truck/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {

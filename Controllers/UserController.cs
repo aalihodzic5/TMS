@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMS.Data;
 using TMS.Models;
-using Microsoft.AspNetCore.Identity;
 
 
 namespace TMS.Controllers
@@ -43,7 +43,7 @@ namespace TMS.Controllers
             return View(user);
         }
 
-        // ✅ GET: /User/Create
+        // GET: /User/Create
         [HttpGet]
         public IActionResult Create()
         {

@@ -9,7 +9,6 @@
 {
     var lines = result.Split('\n');
 
-    // Ako sadrži Markdown tabelu (| kolone |), prikaži tabelu
     if (lines.Any(l => l.Contains("|")))
     {
         var tableLines = lines.Where(l => l.Contains("|")).ToList();
@@ -43,7 +42,6 @@
         </div>
     }
 
-    // Sažetak ispod tabele
     <div class="mt-4 p-3 rounded shadow-sm" style="background:#f9f9f9;">
         <h5 class="fw-bold" style="background: linear-gradient(90deg, #4285F4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
             📌 Sažetak preporuke

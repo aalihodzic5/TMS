@@ -13,10 +13,15 @@ namespace TMS.Models
         public string UserId { get; set; }
         public User User { get; set; } = default!;
 
+        [Required]
+        [StringLength(50)]
         public String Message { get; set; }
 
+        [Required]
+        [FutureOrTodayDate(ErrorMessage = "Notification date cannot be in the past.")]
         public DateTime NotificationDate { get; set; }
 
+        [Required]
         [EnumDataType(typeof(NotificationStatus))]
         public NotificationStatus status { get; set; }
 

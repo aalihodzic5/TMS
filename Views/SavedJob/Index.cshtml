@@ -82,13 +82,11 @@ else
 
           window.addToCompare = function (jobId) {
             let sel = getSel();
-
-            // toggle
             if (sel.includes(jobId)) {
               sel = sel.filter(x => x !== jobId);
             } else {
               sel.push(jobId);
-              if (sel.length > 2) sel = sel.slice(sel.length - 2); // zadrži zadnja 2
+              if (sel.length > 2) sel = sel.slice(sel.length - 2); 
             }
 
             setSel(sel);
@@ -96,7 +94,6 @@ else
 
             if (sel.length === 2) {
               const qs = encodeURIComponent(sel.join(","));
-              // idi na komparator (controller treba da prima ?ids=12,34)
               window.location.href = `/Comparator?ids=${qs}`;
             }
           };
@@ -123,7 +120,6 @@ else
           document.addEventListener("DOMContentLoaded", function() {
             updateCompareButtons();
 
-            // Handle double click for details
             document.querySelectorAll("tbody tr").forEach(row => {
                 row.addEventListener("dblclick", function() {
                     const savedJobId = this.getAttribute("data-savedjobid");

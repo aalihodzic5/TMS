@@ -1,8 +1,5 @@
-﻿using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace TMS.Services
 {
@@ -16,7 +13,7 @@ namespace TMS.Services
         {
             _httpClient = new HttpClient();
             _apiKey = config["Gemini:ApiKey"] ?? throw new ArgumentNullException("Gemini:ApiKey not configured");
-            _model =  "gemini-2.5-flash"; // default 2.5 flash
+            _model =  "gemini-2.5-flash";
         }
 
         public async Task<string> SendPromptAsync(string prompt)
@@ -44,7 +41,6 @@ namespace TMS.Services
                 throw new Exception($"Gemini API error: {result}");
             }
 
-            // Parsiraj samo tekstualni odgovor
             using var doc = JsonDocument.Parse(result);
             var candidates = doc.RootElement.GetProperty("candidates");
 

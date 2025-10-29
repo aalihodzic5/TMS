@@ -1,4 +1,6 @@
 ﻿@model List<TMS.Models.Job>
+<link rel="stylesheet" href="~/css/site.css" />
+
 @{
     ViewData["Title"] = "Comparator";
     var valid = Model != null && Model.Count >= 2;
@@ -34,39 +36,6 @@ else
             : "<span style='color:red;' title='Worse'>&#9660;</span>";
     }
 }
-
-<style>
-    .compare-header {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .compare-card {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 12px;
-        background: #f9fafb;
-    }
-
-        .compare-card h5 {
-            margin: 0 0 8px 0;
-        }
-
-    .table-compare th {
-        background: #f3f4f6;
-    }
-
-    .table-compare td, .table-compare th {
-        vertical-align: middle;
-    }
-
-    tr.diff td:nth-child(2), tr.diff td:nth-child(3) {
-        font-weight: 600;
-        background: #fffbea;
-    }
-</style>
 
 <div class="compare-header">
     <div class="compare-card">

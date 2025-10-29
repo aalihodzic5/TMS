@@ -17,7 +17,7 @@ public class ComparatorController : Controller
         _db = db; _userManager = userManager;
     }
 
-    // GET /Comparator?ids=12,34
+  
     [HttpGet("")]
     public async Task<IActionResult> Index(string ids)
     {
@@ -36,8 +36,7 @@ public class ComparatorController : Controller
         if (jobs.Count < 2)
             return RedirectToAction("Filter", "Job");
 
-        // zadrži redoslijed kako je korisnik birao
         var ordered = parsed.Select(id => jobs.First(j => j.Id == id)).ToList();
-        return View(ordered); // očekuje List<Job> (2 stavke)
+        return View(ordered); 
     }
 }

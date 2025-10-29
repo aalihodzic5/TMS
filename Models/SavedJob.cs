@@ -17,7 +17,8 @@ namespace TMS.Models
         public int JobId { get; set; }
         public Job Job { get; set; } = default!;
 
-        [Required]  
+        [Required]
+        [Display(Name = "Saved Date")]
         public DateTime savedDate { get; set; } = DateTime.Now;
         
 

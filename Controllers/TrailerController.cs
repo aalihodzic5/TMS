@@ -70,8 +70,9 @@ namespace TMS.Controllers
         public async Task<IActionResult> Create()
         {
             var userId = _userManager.GetUserId(User);
+            if(userId == null) return NotFound();
             await PopulateTruckDropdownAsync(userId);
-            return View(new Trailer()); // prazan model; TruckId se bira iz dropdowna
+            return View(new Trailer());
         }
 
 
@@ -83,31 +84,24 @@ namespace TMS.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            // 1) Mora biti izabran kamion
             if (trailer.TruckId == 0)
                 ModelState.AddModelError("TruckId", "Morate izabrati kamion.");
 
-            // 2) Kamion mora pripadati trenutnom korisniku
             var isMine = await _context.Truck.AnyAsync(t => t.Id == trailer.TruckId && t.UserID == userId);
             if (!isMine)
                 ModelState.AddModelError("TruckId", "Odabrani kamion ne pripada vašem nalogu.");
 
-
-            /**/
             var errs = ModelState.Where(kv => kv.Value.Errors.Any())
                      .Select(kv => $"{kv.Key}: {string.Join(", ", kv.Value.Errors.Select(e => e.ErrorMessage))}");
             TempData["ModelErrors"] = string.Join(" | ", errs);
 
-
-            /**/
-
             if (!ModelState.IsValid)
             {
+                if(userId == null) return NotFound();
                 await PopulateTruckDropdownAsync(userId, trailer.TruckId);
                 return View(trailer);
             }
 
-            // 3) Snimi i pređi na Index
             _context.Add(trailer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -123,8 +117,7 @@ namespace TMS.Controllers
                 .Include(t => t.Truck)
                 .FirstOrDefaultAsync(t => t.Id == id && t.Truck != null && t.Truck.UserID == userId);
 
-            if (trailer == null) return NotFound();
-
+            if (trailer == null || userId == null) return NotFound();
             await PopulateTruckDropdownAsync(userId, trailer.TruckId);
             return View(trailer);
         }
@@ -156,6 +149,7 @@ namespace TMS.Controllers
 
             if (!ModelState.IsValid)
             {
+                if(userId == null) return NotFound();
                 await PopulateTruckDropdownAsync(userId, trailer.TruckId);
                 return View(trailer);
             }

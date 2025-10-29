@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Identity;
 
 namespace TMS.Controllers
 {
@@ -63,7 +60,7 @@ namespace TMS.Controllers
             var job = await _context.Job.Include(j => j.User).FirstOrDefaultAsync(j => j.Id == jobId);
             if (job == null) return NotFound();
 
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
             int userOfferCount = await _context.Offer.CountAsync(o => o.JobId == jobId && o.UserId == userId);

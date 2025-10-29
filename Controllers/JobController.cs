@@ -1,20 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
 using TMS.Models.Enums;
-using Microsoft.AspNetCore.Identity;
 
 
 
@@ -32,21 +25,6 @@ namespace TMS.Controllers
             _config = config;
             _userManager = userManager;
         }
-
-
-
-
-
-        /*************************
-         * 
-         * gemini
-         * *****************/
-
-
-
-
-        /****************/
-
 
         // GET: Job
         public async Task<IActionResult> Index()
@@ -93,8 +71,15 @@ namespace TMS.Controllers
 
             if (ModelState.IsValid)
             {
-                job.UserId = _userManager.GetUserId(User);
-                job.User = await _userManager.GetUserAsync(User);
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser == null)
+                {
+                    return Unauthorized();
+                }
+
+                job.UserId = currentUser.Id;
+                job.User = currentUser;
+                job.postingDate = DateTime.Now;
 
                 _context.Add(job);
                 await _context.SaveChangesAsync();

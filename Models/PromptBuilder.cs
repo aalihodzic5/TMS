@@ -12,7 +12,6 @@ namespace GeminiPromptGenerator
         {
             var sb = new StringBuilder();
 
-            // Upute za Gemini
             sb.AppendLine("Ti si stručnjak za logistiku i optimizaciju transporta. Analizirat ćeš listu poslova i predložiti najisplativije poslove.");
             sb.AppendLine();
             sb.AppendLine("Ulazne informacije za svaki posao (obavezno):");
@@ -45,8 +44,7 @@ namespace GeminiPromptGenerator
 
             foreach (var j in jobs)
             {
-                // Ako nema trajanje, možeš ga ostaviti prazno ili procijeniti
-                string durationHours = "24"; // primjer: default 1 dan (24h), možeš promijeniti
+                string durationHours = "24"; 
 
                 string originSafe = (j.locationOrigin ?? "").Replace(",", ";");
                 string destSafe = (j.locationDestination ?? "").Replace(",", ";");

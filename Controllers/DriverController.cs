@@ -1,20 +1,10 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.Data;
 using TMS.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
-using static System.Collections.Specialized.BitVector32;
 
 namespace TMS.Controllers
 {
@@ -31,10 +21,7 @@ namespace TMS.Controllers
             _userManager = userManager;
         }
 
-
-
         // GET: Driver
-
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
@@ -71,7 +58,8 @@ namespace TMS.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var user = await _userManager.GetUserAsync(User);
-            
+            if (user == null || userId == null) 
+                { return Unauthorized(); }
 
             ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}";
 
@@ -93,6 +81,8 @@ namespace TMS.Controllers
 
             driver.UserID = _userManager.GetUserId(User);
             var user = await _userManager.GetUserAsync(User);
+            if(user == null || driver.UserID == null) 
+                { return Unauthorized(); }
             ViewBag.CurrentUserName = $"{user.Ime} {user.Prezime}"; 
             ViewBag.CurrentUserID = user.Id;
 
@@ -103,7 +93,6 @@ namespace TMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Ako model nije validan, puni dropdown ponovo sa selektovanim vrijednostima
             await PopulateDropdownsAsync(driver.UserID, driver.TruckId);
             return View(driver);
         }
@@ -112,7 +101,7 @@ namespace TMS.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var driver = await _context.Driver.FindAsync(id);
-            if (driver == null)
+            if (driver == null || driver.UserID==null)
                 return NotFound();
 
             await PopulateDropdownsAsync(driver.UserID, driver.TruckId);
@@ -183,7 +172,7 @@ namespace TMS.Controllers
 
 
 
-        private async Task PopulateDropdownsAsync(string selectedUserId = null, int? selectedTruckId = null)
+        private async Task PopulateDropdownsAsync(string? selectedUserId = null, int? selectedTruckId = null)
         {
             var users = await _userManager.Users
                 .Select(u => new SelectListItem
@@ -198,13 +187,15 @@ namespace TMS.Controllers
                 .Select(t => new SelectListItem
                 {
                     Value = t.Id.ToString(),
-                    Text = t.licensePlate
+                    Text = t.licensePlate,
+                    Selected = (selectedTruckId != null && t.Id == selectedTruckId) 
                 })
                 .ToListAsync();
 
             ViewBag.Users = users;
             ViewBag.Trucks = trucks;
         }
+
 
     }
 }

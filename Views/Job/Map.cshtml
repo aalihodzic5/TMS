@@ -42,10 +42,7 @@
 <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
 
 <script>
-    // --- MAP INIT ---
 const map = L.map('map').setView([43.8563, 18.4131], 7);
-
-// --- LAYERS ---
 const baseLayers = {
     "🗺️ Streets (Default)": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -64,10 +61,8 @@ const baseLayers = {
     })
 };
 
-// Add default
 baseLayers["🗺️ Streets (Default)"].addTo(map);
 
-// --- CONTROL ---
 
     L.control.layers(
         {
@@ -88,7 +83,6 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
     let markers = [];
     let clickedPoints = [];
 
-    // Geokodiranje (tekst → koordinate)
     async function geocodeLocation(location) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
         const response = await fetch(url);
@@ -103,7 +97,6 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
         }
     }
 
-    // Reverse geokodiranje (koordinate → adresa)
     async function reverseGeocode(lat, lng) {
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
         const response = await fetch(url);
@@ -111,7 +104,6 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
         return data.display_name || "Nepoznata lokacija";
     }
 
-    // Rutiranje
     async function getRoute(start, end) {
 
         const response = await fetch('/Job/GetRoute', {
@@ -135,17 +127,11 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
         
         const coords = data.routes[0].geometry.coordinates;
         addRouteToMap(coords);
-        //const latlngs = coords.map(c => [c[1], c[0]]);
-        //routeLine = L.polyline(coords, { color: 'blue' }).addTo(map);
-        //map.fitBounds(routeLine.getBounds());
-
-        //const distanceKm = data.routes[0].properties.summary.distance / 1000;
-        //alert(`Udaljenost: ${distanceKm.toFixed(2)} km`);
         
     }
 
             function addRouteToMap(coordinates) {
-        const latlngs = coordinates.map(c => [c[1], c[0]]); // [lng, lat] → [lat, lng]
+        const latlngs = coordinates.map(c => [c[1], c[0]]); 
 
         if (routeLine) {
             map.removeLayer(routeLine);
@@ -160,13 +146,10 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
         map.fitBounds(routeLine.getBounds());
     }
 
-
-    // Klikom na mapu
     map.on('click', async function (e) {
         const { lat, lng } = e.latlng;
 
         if (clickedPoints.length >= 2) {
-            // Resetuj sve
             clickedPoints = [];
             markers.forEach(m => map.removeLayer(m));
             markers = [];
@@ -197,7 +180,6 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
         }
     });
 
-    // Unos kroz formu
     document.getElementById("routeForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -208,7 +190,6 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
             const start = await geocodeLocation(startLocation);
             const end = await geocodeLocation(endLocation);
 
-            // Reset
             if (routeLine) map.removeLayer(routeLine);
             markers.forEach(m => map.removeLayer(m));
             markers = [];
@@ -252,10 +233,9 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
                 <td>${cijena} €</td>
             `;
 
-            let clickTimer = null; // Dodajte timer za click događaj
+            let clickTimer = null; 
 
             row.addEventListener("click", async () => {
-                // Postavite timer. Ako se dblclick dogodi unutar 200ms, ovaj timer će biti poništen.
                 clickTimer = setTimeout(async () => {
                     try {
                         const start = await geocodeLocation(job.locationOrigin);
@@ -273,11 +253,11 @@ baseLayers["🗺️ Streets (Default)"].addTo(map);
                     } catch (error) {
                         alert("Ne mogu prikazati rutu: " + error.message);
                     }
-                }, 800); //kasnjenje od 800ms
+                }, 800);
             });
 
             row.addEventListener("dblclick", () => {
-                clearTimeout(clickTimer); // Poništite single click timer
+                clearTimeout(clickTimer); 
                 if (hasValidId) {
                     window.location.href = `/Job/Details/${jobId}`;
                 } else {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TMS.Models.Enums;
 
@@ -49,7 +47,6 @@ namespace TMS.Models
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; } = DriverStatus.AVAILABLE;
 
-        // Relacija: jedan vozač ima više licenci
         [Display(Name = "Driver Licences")]
         public ICollection<DriverLicence> DriverLicences { get; set; } = new List<DriverLicence>();
 

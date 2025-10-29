@@ -1,6 +1,7 @@
 ﻿namespace TMS.Models
 {
     using Microsoft.AspNetCore.SignalR;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     public class NotificationHub:Hub
     {
@@ -14,12 +15,26 @@
         public override async Task OnConnectedAsync()
         {
             var user = Context.User;
-            string userId = user.Identity.Name; // Get the user's ID
-                                                // Store the user's ID for this connection (as before)
+
+            if (user == null)
+            {
+                await base.OnConnectedAsync();
+                return;
+            }
+
+            string? userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                await base.OnConnectedAsync();
+                return;
+            }
+
             Connections.Add(Context.ConnectionId, userId);
 
             await base.OnConnectedAsync();
         }
+
 
         public static class Connections
         {
@@ -29,7 +44,7 @@
                 Users[connectionId] = userName;
             }
 
-            public static string GetUserName(string connectionId)
+            public static string? GetUserName(string connectionId)
             {
                 if (Users.ContainsKey(connectionId))
                 {

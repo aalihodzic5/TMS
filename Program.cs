@@ -22,8 +22,6 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-
 // 3. Dodaj globalni [Authorize] filter
 builder.Services.AddControllersWithViews(options =>
 {
@@ -53,11 +51,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
-
-
-
-// 4. Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -67,22 +60,14 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication(); 
 app.UseAuthorization();
-
-// 5. MVC rute
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.MapRazorPages();
-
 app.MapHub<NotificationHub>("/notificationHub");
-
 app.Run();
