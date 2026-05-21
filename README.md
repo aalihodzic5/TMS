@@ -1,6 +1,6 @@
 # TMS – Transport Management System
 
-TMS is a web application designed for freight transport organization and logistics management. The system allows users to search available transport routes, manage transport offers, compare jobs, track operations, and organize transport-related activities through a centralized platform.
+TMS is a web application designed for freight transport organization and logistics management. The system allows users to search available transport routes, manage transport offers, compare jobs, and use AI-assisted analysis to identify the most profitable transport opportunities.
 
 ## Key Features
 
@@ -8,20 +8,22 @@ TMS is a web application designed for freight transport organization and logisti
 - transport route search and filtering
 - map-based route visualization
 - route creation, management, and removal
-- transport job comparison system
 - offer creation and management
+- AI-assisted route and job analysis
+- intelligent transport job ranking and comparison
+- recommendation system for profitable transport offers
 - notification system
+- chat and communication between system actors
 - driver, truck, and trailer management
 - subscription and payment management
 - real-time vehicle tracking
-- chat and communication between system actors
 - automated reports and analytics
 
 ## System Roles
 
-- **Administrator** – manages users, subscriptions, and system-wide operations
-- **Dispatcher** – manages transport operations, routes, and job assignments
-- **Transport Service User** – creates and manages transport offers and routes
+- **Administrator** – manages users, subscriptions, payments, and system-wide operations
+- **Dispatcher** – manages transport operations, routes, offers, vehicles, and job assignments
+- **Transport Service User** – creates and manages transport routes, offers, and related communication
 
 ## Technologies
 
