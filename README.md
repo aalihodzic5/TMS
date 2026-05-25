@@ -25,6 +25,27 @@ TMS is a web application designed for freight transport organization and logisti
 - **Dispatcher** – manages transport operations, routes, offers, vehicles, and job assignments
 - **Transport Service User** – creates and manages transport routes, offers, and related communication
 
+## Live Demo
+
+Application URL:  
+http://tms-ajdin.runasp.net/
+
+## Demo Accounts
+
+These accounts are intended for project evaluation and testing only.
+
+### Administrator
+Email: admin@tms.test  
+Password: Test123!
+
+### Dispatcher
+Email: dispatcher1@tms.test  
+Password: Test123!
+
+### Broker
+Email: broker1@tms.test  
+Password: Test123!
+
 ## Technologies
 
 The project is implemented as an ASP.NET MVC web application with database integration and external map services for route visualization and tracking.
